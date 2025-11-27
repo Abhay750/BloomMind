@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloom Challenges - Growth Challenge Hub | MindBloom</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .challenge-card {
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+            backdrop-filter: blur(10px);
+        }
+        
+        .challenge-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(45, 90, 74, 0.15);
+        }
+        
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+        
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.35s;
+            transform-origin: 50% 50%;
+        }
+        
+        .streak-flame {
+            animation: flicker 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes flicker {
+            0% { opacity: 0.8; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.05); }
+        }
+        
+        .achievement-badge {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .floating-element:nth-child(2) {
+            animation-delay: -2s;
+        }
+        
+        .floating-element:nth-child(3) {
+            animation-delay: -4s;
+        }
+        
+        .gradient-orb {
+            background: radial-gradient(circle at 30% 30%, rgba(123, 160, 91, 0.3), rgba(45, 90, 74, 0.1));
+            filter: blur(1px);
+        }
+        
+        .challenge-difficulty-easy {
+            border-left: 4px solid #6B9B6B;
+        }
+        
+        .challenge-difficulty-medium {
+            border-left: 4px solid #E8B86D;
+        }
+        
+        .challenge-difficulty-hard {
+            border-left: 4px solid #B85A5A;
+        }
+        
+        .community-avatar {
+            border: 2px solid #7BA05B;
+        }
+        
+        .mood-responsive-bg {
+            background: linear-gradient(135deg, #F0F4F2 0%, #E6EFDB 50%, #F4F7F0 100%);
+        }
+    </style>
+  
+  <script type="module" async src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fmindbloom3946back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.10"></script>
+  <script type="module" defer src="https://static.rocket.new/rocket-shot.js?v=0.0.1"></script>
+  </head>
+<body class="bg-background text-text-primary overflow-x-hidden">
+    <!-- Navigation Header -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-border-light transition-gentle">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-inter font-semibold text-primary">MindBloom</span>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-text-secondary hover:text-primary transition-gentle">Home</a>
+                    <a href="mood_tracker.html" class="text-text-secondary hover:text-primary transition-gentle">Mood Tracker</a>
+                    <a href="ai_companion.html" class="text-text-secondary hover:text-primary transition-gentle">AI Companion</a>
+                    <a href="growth_challenges.html" class="text-primary font-medium border-b-2 border-primary pb-1">Challenges</a>
+                    <a href="wellness_library.html" class="text-text-secondary hover:text-primary transition-gentle">Library</a>
+                    <a href="progress_analytics.html" class="text-text-secondary hover:text-primary transition-gentle">Progress</a>
+                <a href="log_in.html" class="text-text-secondary hover:text-primary transition-gentle"><button class="btn-login">Login</button></a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden p-2 rounded-lg hover:bg-surface transition-gentle" id="mobile-menu-btn">
+                    <svg class="w-6 h-6 text-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div class="md:hidden hidden bg-white border-t border-border-light" id="mobile-menu">
+            <div class="px-4 py-2 space-y-1">
+                <a href="homepage.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Home</a>
+                <a href="mood_tracker.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Mood Tracker</a>
+                <a href="ai_companion.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">AI Companion</a>
+                <a href="growth_challenges.html" class="block px-3 py-2 text-primary font-medium bg-primary-50 rounded-lg">Challenges</a>
+                <a href="wellness_library.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Library</a>
+                <a href="progress_analytics.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Progress</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-20 pb-12 mood-responsive-bg overflow-hidden">
+        <!-- Floating Gradient Orbs -->
+        <div class="absolute top-20 left-10 w-32 h-32 gradient-orb rounded-full floating-element opacity-60"></div>
+        <div class="absolute top-40 right-20 w-24 h-24 gradient-orb rounded-full floating-element opacity-40"></div>
+        <div class="absolute bottom-32 left-1/4 w-20 h-20 gradient-orb rounded-full floating-element opacity-50"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center space-x-2 bg-accent-100 text-accent-700 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    <span>Bloom Challenges</span>
+                </div>
+                <h1 class="text-4xl md:text-5xl font-inter font-bold text-primary mb-6">
+                    Your Growth Challenge Hub
+                </h1>
+                <p class="text-lg text-text-secondary max-w-3xl mx-auto font-source leading-relaxed">
+                    Transform your mental wellness journey through engaging, bite-sized activities designed to fit seamlessly into your daily routine. Every small action creates profound transformation.
+                </p>
+            </div>
+
+            <!-- Progress Overview Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+                <!-- Current Streak -->
+                <div class="card text-center">
+                    <div class="flex justify-center mb-4">
+                        <div class="relative">
+                            <div class="w-16 h-16 bg-gradient-to-br from-accent to-accent-600 rounded-full flex items-center justify-center streak-flame">
+                                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.28 2.67-.2 3.73-.74 1.67-2.23 2.72-4.01 2.72z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-inter font-bold text-primary mb-1">7 Days</h3>
+                    <p class="text-text-secondary font-source">Current Streak</p>
+                </div>
+
+                <!-- Challenges Completed -->
+                <div class="card text-center">
+                    <div class="flex justify-center mb-4">
+                        <div class="relative w-16 h-16">
+                            <svg class="progress-ring w-16 h-16" viewBox="0 0 120 120">
+                                <circle class="progress-ring-circle" stroke="#E1E8E1" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                                <circle class="progress-ring-circle" stroke="#7BA05B" stroke-width="8" fill="transparent" r="52" cx="60" cy="60" stroke-dasharray="327" stroke-dashoffset="98"/>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="text-lg font-inter font-bold text-secondary">70%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-inter font-bold text-primary mb-1">28/40</h3>
+                    <p class="text-text-secondary font-source">This Month</p>
+                </div>
+
+                <!-- Achievement Points -->
+                <div class="card text-center">
+                    <div class="flex justify-center mb-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-success to-success-600 rounded-full flex items-center justify-center achievement-badge">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-inter font-bold text-primary mb-1">2,450</h3>
+                    <p class="text-text-secondary font-source">Growth Points</p>
+                </div>
+
+                <!-- Community Rank -->
+                <div class="card text-center">
+                    <div class="flex justify-center mb-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-primary to-primary-600 rounded-full flex items-center justify-center">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-inter font-bold text-primary mb-1">#127</h3>
+                    <p class="text-text-secondary font-source">Community Rank</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Daily Challenges Section -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-3xl font-inter font-bold text-primary mb-2">Today's Challenges</h2>
+                    <p class="text-text-secondary font-source">November 7, 2025 • 3 challenges available</p>
+                </div>
+                <button class="btn-secondary">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    Refresh Challenges
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Challenge 1: Mindful Morning -->
+                <div class="challenge-card card challenge-difficulty-easy hover:shadow-organic-lg cursor-pointer" onclick="startChallenge('mindful-morning')">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-success-100 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6 text-success" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <span class="inline-block bg-success-100 text-success-700 text-xs px-2 py-1 rounded-full font-medium">Easy</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm text-text-secondary">+50 points</div>
+                            <div class="text-xs text-text-secondary">5 min</div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-lg font-inter font-semibold text-primary mb-2">Mindful Morning Ritual</h3>
+                    <p class="text-text-secondary font-source mb-4">Start your day with 5 minutes of mindful breathing and intention setting.</p>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-6 h-6 bg-success-200 rounded-full flex items-center justify-center">
+                                <svg class="w-3 h-3 text-success-700" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <span class="text-sm text-text-secondary">Ready to start</span>
+                        </div>
+                        <button class="text-primary font-medium hover:text-primary-600 transition-gentle">
+                            Begin Challenge
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Challenge 2: Gratitude Journal -->
+                <div class="challenge-card card challenge-difficulty-easy hover:shadow-organic-lg cursor-pointer" onclick="startChallenge('gratitude-journal')">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-accent-100 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6 text-accent-700" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <span class="inline-block bg-success-100 text-success-700 text-xs px-2 py-1 rounded-full font-medium">Easy</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm text-text-secondary">+75 points</div>
+                            <div class="text-xs text-text-secondary">10 min</div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-lg font-inter font-semibold text-primary mb-2">Three Things Gratitude</h3>
+                    <p class="text-text-secondary font-source mb-4">Write down three things you're grateful for today and reflect on why.</p>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-6 h-6 bg-success-200 rounded-full flex items-center justify-center">
+                                <svg class="w-3 h-3 text-success-700" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <span class="text-sm text-text-secondary">Ready to start</span>
+                        </div>
+                        <button class="text-primary font-medium hover:text-primary-600 transition-gentle">
+                            Begin Challenge
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Challenge 3: Social Connection -->
+                <div class="challenge-card card challenge-difficulty-medium hover:shadow-organic-lg cursor-pointer" onclick="startChallenge('social-connection')">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-secondary-100 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6 text-secondary" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zM4 18v-4h3v4h2v-7.5c0-.83.67-1.5 1.5-1.5S12 9.67 12 10.5V11h2.5c.83 0 1.5.67 1.5 1.5V18h2v-6.5c0-1.38-1.12-2.5-2.5-2.5H13V8.5c0-.83-.67-1.5-1.5-1.5S10 7.67 10 8.5V9H8.5C7.12 9 6 10.12 6 11.5V18H4z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <span class="inline-block bg-warning-100 text-warning-700 text-xs px-2 py-1 rounded-full font-medium">Medium</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm text-text-secondary">+100 points</div>
+                            <div class="text-xs text-text-secondary">15 min</div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-lg font-inter font-semibold text-primary mb-2">Meaningful Connection</h3>
+                    <p class="text-text-secondary font-source mb-4">Reach out to someone you care about with a thoughtful message or call.</p>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-6 h-6 bg-warning-200 rounded-full flex items-center justify-center">
+                                <svg class="w-3 h-3 text-warning-700" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                </svg>
+                            </div>
+                            <span class="text-sm text-text-secondary">Ready to start</span>
+                        </div>
+                        <button class="text-primary font-medium hover:text-primary-600 transition-gentle">
+                            Begin Challenge
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Weekly Challenges Section -->
+    <section class="py-16 bg-surface">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-inter font-bold text-primary mb-4">Weekly Growth Challenges</h2>
+                <p class="text-lg text-text-secondary max-w-2xl mx-auto font-source">
+                    Deeper challenges designed to create lasting change over seven days of consistent practice.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Active Weekly Challenge -->
+                <div class="card hover:shadow-organic-lg transition-all duration-400">
+                    <div class="flex items-start justify-between mb-6">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-16 h-16 bg-gradient-to-br from-primary to-primary-600 rounded-2xl flex items-center justify-center">
+                                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-inter font-semibold text-primary">Digital Detox Week</h3>
+                                <p class="text-text-secondary font-source">Day 3 of 7</p>
+                            </div>
+                        </div>
+                        <span class="inline-block bg-primary-100 text-primary-700 text-sm px-3 py-1 rounded-full font-medium">Active</span>
+                    </div>
+
+                    <p class="text-text-secondary font-source mb-6">
+                        Reduce screen time and reconnect with offline activities. Set boundaries with technology to improve mental clarity and presence.
+                    </p>
+
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-medium text-text-secondary">Progress</span>
+                            <span class="text-sm font-medium text-primary">3/7 days</span>
+                        </div>
+                        <div class="w-full bg-border rounded-full h-2">
+                            <div class="bg-gradient-to-r from-primary to-secondary h-2 rounded-full" style="width: 43%"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm text-text-secondary">
+                            <span class="font-medium">+500 points</span> on completion
+                        </div>
+                        <button class="btn-primary">Continue Challenge</button>
+                    </div>
+                </div>
+
+                <!-- Available Weekly Challenge -->
+                <div class="card hover:shadow-organic-lg transition-all duration-400 opacity-75">
+                    <div class="flex items-start justify-between mb-6">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-16 h-16 bg-gradient-to-br from-secondary to-secondary-600 rounded-2xl flex items-center justify-center">
+                                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-inter font-semibold text-primary">Kindness Challenge</h3>
+                                <p class="text-text-secondary font-source">7 days of giving</p>
+                            </div>
+                        </div>
+                        <span class="inline-block bg-border text-text-secondary text-sm px-3 py-1 rounded-full font-medium">Available</span>
+                    </div>
+
+                    <p class="text-text-secondary font-source mb-6">
+                        Perform one act of kindness each day for a week. Experience the joy of giving and its positive impact on your wellbeing.
+                    </p>
+
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-medium text-text-secondary">Difficulty</span>
+                            <span class="text-sm font-medium text-secondary">Medium</span>
+                        </div>
+                        <div class="flex space-x-1">
+                            <div class="w-3 h-3 bg-secondary rounded-full"></div>
+                            <div class="w-3 h-3 bg-secondary rounded-full"></div>
+                            <div class="w-3 h-3 bg-border rounded-full"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm text-text-secondary">
+                            <span class="font-medium">+750 points</span> on completion
+                        </div>
+                        <button class="btn-secondary">Start Next Week</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Features Section -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-inter font-bold text-primary mb-4">Community Growth</h2>
+                <p class="text-lg text-text-secondary max-w-2xl mx-auto font-source">
+                    Connect with others on similar journeys and celebrate achievements together.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Recent Achievements -->
+                <div>
+                    <h3 class="text-xl font-inter font-semibold text-primary mb-6">Recent Community Achievements</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4 p-4 bg-surface rounded-lg">
+                            <img src="https://images.unsplash.com/photo-1723853584576-0be4b83593ea" 
+                                 alt="Profile photo of Sarah M., a community member who completed the mindfulness challenge" 
+                                 class="w-12 h-12 rounded-full object-cover community-avatar"
+                                 onerror="this.src='https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2">
+                                    <span class="font-medium text-primary">Sarah M.</span>
+                                    <span class="text-sm text-text-secondary">completed</span>
+                                    <span class="text-sm font-medium text-secondary">7-Day Mindfulness</span>
+                                </div>
+                                <p class="text-sm text-text-secondary">2 hours ago</p>
+                            </div>
+                            <div class="text-accent-600">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-4 p-4 bg-surface rounded-lg">
+                            <img src="https://img.rocket.new/generatedImages/rocket_gen_img_14eef1632-1762248960185.png" 
+                                 alt="Profile photo of Michael R., a community member who achieved a 30-day streak" 
+                                 class="w-12 h-12 rounded-full object-cover community-avatar"
+                                 onerror="this.src='https://images.pixabay.com/photo/2016/11/21/12/42/beard-1845166_1280.jpg'; this.onerror=null;">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2">
+                                    <span class="font-medium text-primary">Michael R.</span>
+                                    <span class="text-sm text-text-secondary">achieved</span>
+                                    <span class="text-sm font-medium text-accent-600">30-Day Streak</span>
+                                </div>
+                                <p class="text-sm text-text-secondary">5 hours ago</p>
+                            </div>
+                            <div class="text-accent-600 streak-flame">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-4 p-4 bg-surface rounded-lg">
+                            <img src="https://img.rocket.new/generatedImages/rocket_gen_img_1f94bdc89-1762274217022.png" 
+                                 alt="Profile photo of Emma L., a community member who completed the gratitude challenge" 
+                                 class="w-12 h-12 rounded-full object-cover community-avatar"
+                                 onerror="this.src='https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2">
+                                    <span class="font-medium text-primary">Emma L.</span>
+                                    <span class="text-sm text-text-secondary">completed</span>
+                                    <span class="text-sm font-medium text-success">Gratitude Challenge</span>
+                                </div>
+                                <p class="text-sm text-text-secondary">1 day ago</p>
+                            </div>
+                            <div class="text-success">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Challenges -->
+                <div>
+                    <h3 class="text-xl font-inter font-semibold text-primary mb-6">Team Challenges</h3>
+                    <div class="space-y-6">
+                        <div class="card">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <h4 class="text-lg font-inter font-semibold text-primary mb-2">Wellness Warriors</h4>
+                                    <p class="text-text-secondary font-source">5 members • 2 days left</p>
+                                </div>
+                                <span class="inline-block bg-success-100 text-success-700 text-sm px-3 py-1 rounded-full font-medium">Active</span>
+                            </div>
+                            
+                            <p class="text-text-secondary font-source mb-4">
+                                Complete 100 collective challenges this month. Current progress: 73/100
+                            </p>
+                            
+                            <div class="mb-4">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-medium text-text-secondary">Team Progress</span>
+                                    <span class="text-sm font-medium text-success">73%</span>
+                                </div>
+                                <div class="w-full bg-border rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-success to-success-600 h-2 rounded-full" style="width: 73%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="flex -space-x-2">
+                                    <img src="https://img.rocket.new/generatedImages/rocket_gen_img_13f4e4a2e-1762273617377.png" 
+                                         alt="Team member profile photo" 
+                                         class="w-8 h-8 rounded-full border-2 border-white object-cover"
+                                         onerror="this.src='https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;">
+                                    <img src="https://img.rocket.new/generatedImages/rocket_gen_img_13f4e4a2e-1762273617377.png" 
+                                         alt="Team member profile photo" 
+                                         class="w-8 h-8 rounded-full border-2 border-white object-cover"
+                                         onerror="this.src='https://images.pixabay.com/photo/2016/11/21/12/42/beard-1845166_1280.jpg'; this.onerror=null;">
+                                    <img src="https://img.rocket.new/generatedImages/rocket_gen_img_13f4e4a2e-1762273617377.png" 
+                                         alt="Team member profile photo" 
+                                         class="w-8 h-8 rounded-full border-2 border-white object-cover"
+                                         onerror="this.src='https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;">
+                                    <div class="w-8 h-8 rounded-full border-2 border-white bg-primary text-white text-xs flex items-center justify-center">+2</div>
+                                </div>
+                                <button class="text-primary font-medium hover:text-primary-600 transition-gentle">View Team</button>
+                            </div>
+                        </div>
+
+                        <div class="card opacity-75">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <h4 class="text-lg font-inter font-semibold text-primary mb-2">Mindful Collective</h4>
+                                    <p class="text-text-secondary font-source">8 members • Starts Monday</p>
+                                </div>
+                                <span class="inline-block bg-border text-text-secondary text-sm px-3 py-1 rounded-full font-medium">Upcoming</span>
+                            </div>
+                            
+                            <p class="text-text-secondary font-source mb-4">
+                                30-day meditation challenge. Practice together and share insights.
+                            </p>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="text-sm text-text-secondary">
+                                    <span class="font-medium">+1000 points</span> team reward
+                                </div>
+                                <button class="btn-secondary">Join Team</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Achievement Showcase -->
+    <section class="py-16 bg-gradient-to-br from-primary-50 to-secondary-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-inter font-bold text-primary mb-4">Your Achievement Gallery</h2>
+                <p class="text-lg text-text-secondary max-w-2xl mx-auto font-source">
+                    Celebrate your growth journey with earned badges and milestones.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                <!-- Earned Achievements -->
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-gradient-to-br from-accent to-accent-600 rounded-2xl flex items-center justify-center mx-auto mb-3 achievement-badge">
+                        <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-sm font-inter font-semibold text-primary mb-1">Fire Starter</h4>
+                    <p class="text-xs text-text-secondary">7-day streak</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-gradient-to-br from-success to-success-600 rounded-2xl flex items-center justify-center mx-auto mb-3 achievement-badge">
+                        <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-sm font-inter font-semibold text-primary mb-1">Rising Star</h4>
+                    <p class="text-xs text-text-secondary">First challenge</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-gradient-to-br from-secondary to-secondary-600 rounded-2xl flex items-center justify-center mx-auto mb-3 achievement-badge">
+                        <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zM4 18v-4h3v4h2v-7.5c0-.83.67-1.5 1.5-1.5S12 9.67 12 10.5V11h2.5c.83 0 1.5.67 1.5 1.5V18h2v-6.5c0-1.38-1.12-2.5-2.5-2.5H13V8.5c0-.83-.67-1.5-1.5-1.5S10 7.67 10 8.5V9H8.5C7.12 9 6 10.12 6 11.5V18H4z"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-sm font-inter font-semibold text-primary mb-1">Team Player</h4>
+                    <p class="text-xs text-text-secondary">Joined team</p>
+                </div>
+
+                <!-- Locked Achievements -->
+                <div class="text-center opacity-50">
+                    <div class="w-20 h-20 bg-border rounded-2xl flex items-center justify-center mx-auto mb-3">
+                        <svg class="w-10 h-10 text-text-secondary" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-sm font-inter font-semibold text-text-secondary mb-1">Consistency King</h4>
+                    <p class="text-xs text-text-secondary">30-day streak</p>
+                </div>
+
+                <div class="text-center opacity-50">
+                    <div class="w-20 h-20 bg-border rounded-2xl flex items-center justify-center mx-auto mb-3">
+                        <svg class="w-10 h-10 text-text-secondary" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-sm font-inter font-semibold text-text-secondary mb-1">Wellness Guru</h4>
+                    <p class="text-xs text-text-secondary">100 challenges</p>
+                </div>
+
+                <div class="text-center opacity-50">
+                    <div class="w-20 h-20 bg-border rounded-2xl flex items-center justify-center mx-auto mb-3">
+                        <svg class="w-10 h-10 text-text-secondary" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-sm font-inter font-semibold text-text-secondary mb-1">Community Leader</h4>
+                    <p class="text-xs text-text-secondary">Help 50 people</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-accent to-accent-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-inter font-semibold">MindBloom</span>
+                    </div>
+                    <p class="text-primary-200 font-source mb-4 max-w-md">
+                        Your comprehensive digital sanctuary for mental wellness. Nurture your mental health through daily care and attention.
+                    </p>
+                    <p class="text-primary-300 text-sm">© 2025 MindBloom. All Rights Reserved.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-inter font-semibold mb-4">Features</h4>
+                    <ul class="space-y-2 text-primary-200">
+                        <li><a href="mood_tracker.html" class="hover:text-white transition-gentle">Mood Tracker</a></li>
+                        <li><a href="ai_companion.html" class="hover:text-white transition-gentle">AI Companion</a></li>
+                        <li><a href="growth_challenges.html" class="hover:text-white transition-gentle">Growth Challenges</a></li>
+                        <li><a href="progress_analytics.html" class="hover:text-white transition-gentle">Progress Analytics</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-inter font-semibold mb-4">Resources</h4>
+                    <ul class="space-y-2 text-primary-200">
+                        <li><a href="wellness_library.html" class="hover:text-white transition-gentle">Wellness Library</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-white transition-gentle">Crisis Support</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-white transition-gentle">Privacy Policy</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-white transition-gentle">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Challenge interaction functions
+        function startChallenge(challengeId) {
+            // Simulate starting a challenge
+            console.log('Starting challenge:', challengeId);
+            
+            // Show success message
+            const challengeCard = event.currentTarget;
+            const button = challengeCard.querySelector('button');
+            const originalText = button.textContent;
+            
+            button.textContent = 'Starting...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.textContent = 'In Progress';
+                button.classList.remove('text-primary');
+                button.classList.add('text-success');
+                
+                // Add completion indicator
+                const indicator = challengeCard.querySelector('.w-6.h-6');
+                indicator.classList.remove('bg-success-200');
+                indicator.classList.add('bg-success');
+                
+                const icon = indicator.querySelector('svg');
+                icon.classList.remove('text-success-700');
+                icon.classList.add('text-white');
+            }, 1000);
+        }
+
+        // Progress ring animation
+        function animateProgressRing() {
+            const progressRings = document.querySelectorAll('.progress-ring-circle');
+            progressRings.forEach(ring => {
+                const circumference = 2 * Math.PI * 52;
+                const progress = 70; // 70% progress
+                const offset = circumference - (progress / 100) * circumference;
+                
+                ring.style.strokeDasharray = circumference;
+                ring.style.strokeDashoffset = offset;
+            });
+        }
+
+        // Initialize animations when page loads
+        window.addEventListener('load', function() {
+            animateProgressRing();
+            
+            // Add scroll-triggered animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-gentle-fade');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe challenge cards for animation
+            document.querySelectorAll('.challenge-card').forEach(card => {
+                observer.observe(card);
+            });
+        });
+
+        // Simulate real-time updates
+        setInterval(() => {
+            // Update community achievements occasionally
+            const achievements = document.querySelectorAll('.space-y-4 > div');
+            if (achievements.length > 0 && Math.random() < 0.1) {
+                // Randomly update timestamps
+                const timeElements = document.querySelectorAll('.text-sm.text-text-secondary');
+                timeElements.forEach(el => {
+                    if (el.textContent.includes('hours ago')) {
+                        const hours = parseInt(el.textContent);
+                        if (hours < 24) {
+                            el.textContent = `${hours + 1} hours ago`;
+                        }
+                    }
+                });
+            }
+        }, 30000); // Update every 30 seconds
+
+        // Mood-responsive design simulation
+        function updateMoodResponsiveDesign() {
+            const currentHour = new Date().getHours();
+            const body = document.body;
+            
+            // Adjust colors based on time of day (simulating mood)
+            if (currentHour >= 6 && currentHour < 12) {
+                // Morning - energetic colors
+                body.style.setProperty('--mood-filter', 'brightness(1.05) saturate(1.1)');
+            } else if (currentHour >= 12 && currentHour < 18) {
+                // Afternoon - balanced colors
+                body.style.setProperty('--mood-filter', 'brightness(1) saturate(1)');
+            } else {
+                // Evening - calmer colors
+                body.style.setProperty('--mood-filter', 'brightness(0.95) saturate(0.9)');
+            }
+        }
+
+        // Apply mood-responsive design
+        updateMoodResponsiveDesign();
+        
+        // Update every hour
+        setInterval(updateMoodResponsiveDesign, 3600000);
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

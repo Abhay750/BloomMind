@@ -1,0 +1,760 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Sanctuary - MindBloom Analytics</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.6.1/d3.min.js"></script>
+    <style>
+        .progress-card {
+            transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        
+        .progress-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .milestone-badge {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        .insight-card {
+            background: linear-gradient(135deg, rgba(123, 160, 91, 0.05) 0%, rgba(45, 90, 74, 0.05) 100%);
+        }
+        
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+        
+        .progress-ring-circle {
+            transition: stroke-dasharray 0.35s;
+            transform-origin: 50% 50%;
+        }
+        
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .floating-element:nth-child(2) {
+            animation-delay: -2s;
+        }
+        
+        .floating-element:nth-child(3) {
+            animation-delay: -4s;
+        }
+        
+        .gradient-orb {
+            background: radial-gradient(circle at 30% 30%, rgba(123, 160, 91, 0.3), rgba(45, 90, 74, 0.1));
+            filter: blur(1px);
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+    </style>
+  
+  <script type="module" async src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fmindbloom3946back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.10"></script>
+  <script type="module" defer src="https://static.rocket.new/rocket-shot.js?v=0.0.1"></script>
+  </head>
+<body class="bg-background text-text-primary overflow-x-hidden">
+    <!-- Navigation Header -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-border-light transition-gentle">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-inter font-semibold text-primary">MindBloom</span>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-text-secondary hover:text-primary transition-gentle">Home</a>
+                    <a href="mood_tracker.html" class="text-text-secondary hover:text-primary transition-gentle">Mood Tracker</a>
+                    <a href="ai_companion.html" class="text-text-secondary hover:text-primary transition-gentle">AI Companion</a>
+                    <a href="growth_challenges.html" class="text-text-secondary hover:text-primary transition-gentle">Challenges</a>
+                    <a href="wellness_library.html" class="text-text-secondary hover:text-primary transition-gentle">Library</a>
+                    <a href="progress_analytics.html" class="text-primary font-medium border-b-2 border-primary pb-1">Progress</a>
+                <a href="log_in.html" class="text-text-secondary hover:text-primary transition-gentle"><button class="btn-login">Login</button></a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden p-2 rounded-lg hover:bg-surface transition-gentle" id="mobile-menu-btn">
+                    <svg class="w-6 h-6 text-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div class="md:hidden hidden bg-white border-t border-border-light" id="mobile-menu">
+            <div class="px-4 py-2 space-y-1">
+                <a href="homepage.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Home</a>
+                <a href="mood_tracker.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Mood Tracker</a>
+                <a href="ai_companion.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">AI Companion</a>
+                <a href="growth_challenges.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Challenges</a>
+                <a href="wellness_library.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Library</a>
+                <a href="progress_analytics.html" class="block px-3 py-2 text-primary font-medium bg-primary-50 rounded-lg">Progress</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-24 pb-16 bg-gradient-to-br from-primary-50 via-background to-secondary-50 overflow-hidden">
+        <!-- Floating Gradient Orbs -->
+        <div class="absolute top-20 left-10 w-32 h-32 gradient-orb rounded-full floating-element opacity-60"></div>
+        <div class="absolute top-40 right-20 w-24 h-24 gradient-orb rounded-full floating-element opacity-40"></div>
+        <div class="absolute bottom-32 left-1/4 w-20 h-20 gradient-orb rounded-full floating-element opacity-50"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-inter font-bold text-primary mb-4">
+                    Your Progress <span class="text-gradient-primary">Sanctuary</span>
+                </h1>
+                <p class="text-lg text-text-secondary max-w-3xl mx-auto font-source leading-relaxed">
+                    Discover meaningful insights about your mental wellness journey through advanced analytics 
+                    that celebrate your growth and illuminate patterns in your emotional landscape.
+                </p>
+            </div>
+
+            <!-- Quick Stats Overview -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+                <div class="progress-card card text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-primary to-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-inter font-bold text-primary mb-1">127</h3>
+                    <p class="text-text-secondary font-source">Days Active</p>
+                </div>
+
+                <div class="progress-card card text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-secondary to-secondary-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-inter font-bold text-secondary mb-1">89%</h3>
+                    <p class="text-text-secondary font-source">Goal Achievement</p>
+                </div>
+
+                <div class="progress-card card text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-accent to-accent-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-inter font-bold text-accent-600 mb-1">+23%</h3>
+                    <p class="text-text-secondary font-source">Mood Improvement</p>
+                </div>
+
+                <div class="progress-card card text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-success to-success-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-inter font-bold text-success mb-1">42</h3>
+                    <p class="text-text-secondary font-source">Milestones Reached</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Analytics Dashboard -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Mood Trends Chart -->
+            <div class="mb-16">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+                    <div>
+                        <h2 class="text-3xl font-inter font-bold text-primary mb-2">Mood Journey Overview</h2>
+                        <p class="text-text-secondary font-source">Your emotional patterns and trends over the past 90 days</p>
+                    </div>
+                    <div class="flex items-center space-x-4 mt-4 md:mt-0">
+                        <select class="input-field w-auto" id="timeRange">
+                            <option value="30">Last 30 Days</option>
+                            <option value="90" selected>Last 90 Days</option>
+                            <option value="180">Last 6 Months</option>
+                            <option value="365">Last Year</option>
+                        </select>
+                        <button class="btn-secondary" onclick="exportReport()">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            Export Report
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="chart-container">
+                        <canvas id="moodTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Insights Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+                <!-- Weekly Progress Ring -->
+                <div class="card">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-inter font-semibold text-primary">Weekly Progress</h3>
+                        <span class="text-sm text-text-secondary font-source">Nov 1-7, 2025</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-center mb-6">
+                        <div class="relative w-48 h-48">
+                            <svg class="progress-ring w-full h-full" viewBox="0 0 120 120">
+                                <circle cx="60" cy="60" r="50" stroke="#E1E8E1" stroke-width="8" fill="transparent"/>
+                                <circle cx="60" cy="60" r="50" stroke="#7BA05B" stroke-width="8" fill="transparent" 
+                                        stroke-dasharray="251.2" stroke-dashoffset="62.8" class="progress-ring-circle"/>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="text-center">
+                                    <div class="text-3xl font-inter font-bold text-primary">75%</div>
+                                    <div class="text-sm text-text-secondary font-source">Complete</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary font-source">Mood Tracking</span>
+                            <span class="text-primary font-medium">7/7 days</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary font-source">Journal Entries</span>
+                            <span class="text-primary font-medium">5/7 days</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary font-source">Challenges Completed</span>
+                            <span class="text-primary font-medium">4/5 goals</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-text-secondary font-source">AI Conversations</span>
+                            <span class="text-primary font-medium">12 sessions</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Heatmap -->
+                <div class="card">
+                    <h3 class="text-xl font-inter font-semibold text-primary mb-6">Activity Heatmap</h3>
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between text-sm text-text-secondary font-source mb-2">
+                            <span>Less Active</span>
+                            <span>More Active</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <div class="w-3 h-3 bg-surface rounded-sm"></div>
+                            <div class="w-3 h-3 bg-primary-100 rounded-sm"></div>
+                            <div class="w-3 h-3 bg-primary-300 rounded-sm"></div>
+                            <div class="w-3 h-3 bg-primary-500 rounded-sm"></div>
+                            <div class="w-3 h-3 bg-primary-700 rounded-sm"></div>
+                        </div>
+                    </div>
+                    <div id="activityHeatmap" class="w-full h-40"></div>
+                </div>
+            </div>
+
+            <!-- Insights and Milestones -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- AI-Generated Insights -->
+                <div class="lg:col-span-2">
+                    <h3 class="text-2xl font-inter font-bold text-primary mb-6">Personalized Insights</h3>
+                    <div class="space-y-4">
+                        <div class="insight-card card-subtle p-6 rounded-xl">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-inter font-semibold text-primary mb-2">Morning Routine Impact</h4>
+                                    <p class="text-text-secondary font-source leading-relaxed">
+                                        Your mood scores are consistently 18% higher on days when you complete your morning mindfulness routine. 
+                                        Consider maintaining this positive pattern for continued emotional stability.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="insight-card card-subtle p-6 rounded-xl">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-secondary-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-5 h-5 text-secondary" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-inter font-semibold text-primary mb-2">Weekly Growth Pattern</h4>
+                                    <p class="text-text-secondary font-source leading-relaxed">
+                                        You've shown remarkable consistency in challenge completion over the past month. 
+                                        Your resilience scores have improved by 23% during this period.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="insight-card card-subtle p-6 rounded-xl">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-accent-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-5 h-5 text-accent-600" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-inter font-semibold text-primary mb-2">EmpathyBot Engagement</h4>
+                                    <p class="text-text-secondary font-source leading-relaxed">
+                                        Your conversations with EmpathyBot show increased emotional vocabulary usage. 
+                                        This indicates growing self-awareness and emotional intelligence development.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Milestones -->
+                <div>
+                    <h3 class="text-2xl font-inter font-bold text-primary mb-6">Recent Milestones</h3>
+                    <div class="space-y-4">
+                        <div class="card p-4">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="milestone-badge w-8 h-8 bg-gradient-to-br from-accent to-accent-600 rounded-full flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-inter font-semibold text-primary">100 Day Streak</h4>
+                                    <p class="text-sm text-text-secondary font-source">Nov 5, 2025</p>
+                                </div>
+                            </div>
+                            <p class="text-text-secondary font-source text-sm">
+                                Congratulations on maintaining your daily wellness routine for 100 consecutive days!
+                            </p>
+                        </div>
+
+                        <div class="card p-4">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="milestone-badge w-8 h-8 bg-gradient-to-br from-success to-success-600 rounded-full flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-inter font-semibold text-primary">Mindful Master</h4>
+                                    <p class="text-sm text-text-secondary font-source">Nov 2, 2025</p>
+                                </div>
+                            </div>
+                            <p class="text-text-secondary font-source text-sm">
+                                Completed 50 mindfulness challenges with exceptional consistency.
+                            </p>
+                        </div>
+
+                        <div class="card p-4">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="milestone-badge w-8 h-8 bg-gradient-to-br from-primary to-primary-600 rounded-full flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-inter font-semibold text-primary">Growth Explorer</h4>
+                                    <p class="text-sm text-text-secondary font-source">Oct 28, 2025</p>
+                                </div>
+                            </div>
+                            <p class="text-text-secondary font-source text-sm">
+                                Achieved significant improvement in emotional resilience metrics.
+                            </p>
+                        </div>
+
+                        <div class="text-center mt-6">
+                            <a href="growth_challenges.html" class="btn-primary inline-flex items-center">
+                                View All Achievements
+                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Goal Setting Section -->
+    <section class="py-16 bg-gradient-to-br from-surface to-primary-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-inter font-bold text-primary mb-4">
+                    Set Your Next Wellness Goals
+                </h2>
+                <p class="text-lg text-text-secondary max-w-2xl mx-auto font-source">
+                    Based on your progress patterns, here are personalized recommendations for your continued growth.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="card text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-primary to-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-inter font-semibold text-primary mb-3">Consistency Challenge</h3>
+                    <p class="text-text-secondary font-source mb-4">
+                        Maintain your daily wellness routine for 200 consecutive days to unlock advanced insights.
+                    </p>
+                    <div class="mb-4">
+                        <div class="w-full bg-border rounded-full h-2">
+                            <div class="bg-primary h-2 rounded-full" style="width: 63.5%"></div>
+                        </div>
+                        <p class="text-sm text-text-secondary font-source mt-2">127/200 days</p>
+                    </div>
+                    <button class="btn-primary w-full">Set Goal</button>
+                </div>
+
+                <div class="card text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-secondary to-secondary-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-inter font-semibold text-primary mb-3">Mindfulness Mastery</h3>
+                    <p class="text-text-secondary font-source mb-4">
+                        Complete 100 advanced mindfulness challenges to achieve expert-level emotional regulation.
+                    </p>
+                    <div class="mb-4">
+                        <div class="w-full bg-border rounded-full h-2">
+                            <div class="bg-secondary h-2 rounded-full" style="width: 50%"></div>
+                        </div>
+                        <p class="text-sm text-text-secondary font-source mt-2">50/100 challenges</p>
+                    </div>
+                    <button class="btn-secondary w-full">Set Goal</button>
+                </div>
+
+                <div class="card text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-accent to-accent-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20a3 3 0 01-3-3v-2a3 3 0 013-3h10a3 3 0 013 3v2a3 3 0 01-3 3M7 20v-2m0 0V9a5 5 0 0110 0v9m-10 0a3 3 0 003 3h4a3 3 0 003-3"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-inter font-semibold text-primary mb-3">Community Connection</h3>
+                    <p class="text-text-secondary font-source mb-4">
+                        Share your journey and support others by participating in community discussions.
+                    </p>
+                    <div class="mb-4">
+                        <div class="w-full bg-border rounded-full h-2">
+                            <div class="bg-accent h-2 rounded-full" style="width: 20%"></div>
+                        </div>
+                        <p class="text-sm text-text-secondary font-source mt-2">4/20 interactions</p>
+                    </div>
+                    <button class="btn-accent w-full">Set Goal</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-accent to-accent-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-inter font-semibold">MindBloom</span>
+                    </div>
+                    <p class="text-primary-200 font-source mb-4 max-w-md">
+                        Your comprehensive digital sanctuary for mental wellness. Nurture your mental health through daily care and attention.
+                    </p>
+                    <p class="text-primary-300 text-sm">© 2025 MindBloom. All Rights Reserved.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-inter font-semibold mb-4">Features</h4>
+                    <ul class="space-y-2 text-primary-200">
+                        <li><a href="mood_tracker.html" class="hover:text-white transition-gentle">Mood Tracker</a></li>
+                        <li><a href="ai_companion.html" class="hover:text-white transition-gentle">AI Companion</a></li>
+                        <li><a href="growth_challenges.html" class="hover:text-white transition-gentle">Growth Challenges</a></li>
+                        <li><a href="progress_analytics.html" class="hover:text-white transition-gentle">Progress Analytics</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-inter font-semibold mb-4">Resources</h4>
+                    <ul class="space-y-2 text-primary-200">
+                        <li><a href="wellness_library.html" class="hover:text-white transition-gentle">Wellness Library</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-white transition-gentle">Crisis Support</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-white transition-gentle">Privacy Policy</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-white transition-gentle">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Initialize Charts
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMoodTrendChart();
+            initializeActivityHeatmap();
+        });
+
+        // Mood Trend Chart
+        function initializeMoodTrendChart() {
+            const ctx = document.getElementById('moodTrendChart').getContext('2d');
+            
+            // Mock data for mood trends
+            const moodData = {
+                labels: ['Oct 8', 'Oct 15', 'Oct 22', 'Oct 29', 'Nov 5'],
+                datasets: [
+                    {
+                        label: 'Overall Mood',
+                        data: [6.2, 6.8, 7.1, 7.5, 7.8],
+                        borderColor: '#2D5A4A',
+                        backgroundColor: 'rgba(45, 90, 74, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Energy Level',
+                        data: [5.8, 6.5, 6.9, 7.2, 7.6],
+                        borderColor: '#7BA05B',
+                        backgroundColor: 'rgba(123, 160, 91, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Stress Level',
+                        data: [7.2, 6.8, 6.2, 5.8, 5.2],
+                        borderColor: '#E8B86D',
+                        backgroundColor: 'rgba(232, 184, 109, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            };
+
+            new Chart(ctx, {
+                type: 'line',
+                data: moodData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 0,
+                            max: 10,
+                            grid: {
+                                color: '#F0F4F0'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '/10';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: '#F0F4F0'
+                            }
+                        }
+                    },
+                    elements: {
+                        point: {
+                            radius: 6,
+                            hoverRadius: 8
+                        }
+                    }
+                }
+            });
+        }
+
+        // Activity Heatmap using D3.js
+        function initializeActivityHeatmap() {
+            const container = d3.select('#activityHeatmap');
+            const width = container.node().getBoundingClientRect().width;
+            const height = 160;
+            const cellSize = 12;
+            const cellPadding = 2;
+
+            const svg = container.append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            // Generate mock activity data for the past 12 weeks
+            const data = [];
+            const today = new Date();
+            for (let i = 0; i < 84; i++) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                data.push({
+                    date: date,
+                    value: Math.floor(Math.random() * 5) // 0-4 activity level
+                });
+            }
+
+            const colorScale = d3.scaleLinear()
+                .domain([0, 4])
+                .range(['#F1F4F0', '#2D5A4A']);
+
+            const weeks = d3.group(data, d => d3.timeWeek(d.date));
+            
+            let x = 20;
+            weeks.forEach((weekData, week) => {
+                const weekGroup = svg.append('g')
+                    .attr('transform', `translate(${x}, 20)`);
+
+                weekData.forEach((d, i) => {
+                    weekGroup.append('rect')
+                        .attr('x', 0)
+                        .attr('y', i * (cellSize + cellPadding))
+                        .attr('width', cellSize)
+                        .attr('height', cellSize)
+                        .attr('rx', 2)
+                        .attr('fill', colorScale(d.value))
+                        .append('title')
+                        .text(`${d.date.toDateString()}: ${d.value > 0 ? 'Active' : 'Inactive'}`);
+                });
+
+                x += cellSize + cellPadding;
+            });
+        }
+
+        // Export Report Function
+        function exportReport() {
+            // Mock export functionality
+            const reportData = {
+                period: document.getElementById('timeRange').value + ' days',
+                moodImprovement: '+23%',
+                goalsAchieved: '89%',
+                milestonesReached: 42,
+                generatedOn: new Date().toLocaleDateString()
+            };
+
+            // Create a simple text report
+            const reportText = `
+MindBloom Progress Report
+Generated on: ${reportData.generatedOn}
+Period: Last ${reportData.period}
+
+Key Metrics:
+- Mood Improvement: ${reportData.moodImprovement}
+- Goals Achieved: ${reportData.goalsAchieved}
+- Milestones Reached: ${reportData.milestonesReached}
+
+This report shows your mental wellness journey progress.
+Continue your amazing work!
+            `;
+
+            // Create and download the report
+            const blob = new Blob([reportText], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `mindbloom-progress-report-${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+            // Show success message
+            alert('Progress report exported successfully!');
+        }
+
+        // Time range change handler
+        document.getElementById('timeRange').addEventListener('change', function() {
+            // In a real app, this would reload the chart with new data
+            console.log('Time range changed to:', this.value + ' days');
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll-triggered animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-gentle-fade');
+                }
+            });
+        }, observerOptions);
+
+        // Observe progress cards for animation
+        document.querySelectorAll('.progress-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

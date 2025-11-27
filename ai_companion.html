@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmpathyBot - Your AI Companion | MindBloom</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .chat-container {
+            height: calc(100vh - 200px);
+            min-height: 500px;
+        }
+        
+        .message-bubble {
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        
+        .typing-indicator {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .floating-element:nth-child(2) {
+            animation-delay: -2s;
+        }
+        
+        .floating-element:nth-child(3) {
+            animation-delay: -4s;
+        }
+        
+        .gradient-orb {
+            background: radial-gradient(circle at 30% 30%, rgba(123, 160, 91, 0.3), rgba(45, 90, 74, 0.1));
+            filter: blur(1px);
+        }
+        
+        .mood-indicator {
+            transition: all 0.3s ease;
+        }
+        
+        .mood-indicator.happy {
+            background: linear-gradient(135deg, #7BA05B, #6B9B6B);
+        }
+        
+        .mood-indicator.neutral {
+            background: linear-gradient(135deg, #5A6B5A, #2D5A4A);
+        }
+        
+        .mood-indicator.sad {
+            background: linear-gradient(135deg, #B85A5A, #934848);
+        }
+        
+        .mood-indicator.anxious {
+            background: linear-gradient(135deg, #D4A574, #AA845D);
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        .crisis-banner {
+            background: linear-gradient(135deg, #B85A5A, #934848);
+            animation: gentle-pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes gentle-pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+        }
+        
+        .suggestion-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .chat-input:focus {
+            box-shadow: 0 0 0 3px rgba(45, 90, 74, 0.1);
+        }
+    </style>
+  
+  <script type="module" async src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fmindbloom3946back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.10"></script>
+  <script type="module" defer src="https://static.rocket.new/rocket-shot.js?v=0.0.1"></script>
+  </head>
+<body class="bg-background text-text-primary overflow-x-hidden">
+    <!-- Navigation Header -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-border-light transition-gentle">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-inter font-semibold text-primary">MindBloom</span>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-text-secondary hover:text-primary transition-gentle">Home</a>
+                    <a href="mood_tracker.html" class="text-text-secondary hover:text-primary transition-gentle">Mood Tracker</a>
+                    <a href="ai_companion.html" class="text-primary font-medium border-b-2 border-primary pb-1">AI Companion</a>
+                    <a href="growth_challenges.html" class="text-text-secondary hover:text-primary transition-gentle">Challenges</a>
+                    <a href="wellness_library.html" class="text-text-secondary hover:text-primary transition-gentle">Library</a>
+                    <a href="progress_analytics.html" class="text-text-secondary hover:text-primary transition-gentle">Progress</a>
+                <a href="log_in.html" class="text-text-secondary hover:text-primary transition-gentle"><button class="btn-login">Login</button></a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden p-2 rounded-lg hover:bg-surface transition-gentle" id="mobile-menu-btn">
+                    <svg class="w-6 h-6 text-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div class="md:hidden hidden bg-white border-t border-border-light" id="mobile-menu">
+            <div class="px-4 py-2 space-y-1">
+                <a href="index.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Home</a>
+                <a href="mood_tracker.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Mood Tracker</a>
+                <a href="ai_companion.html" class="block px-3 py-2 text-primary font-medium bg-primary-50 rounded-lg">AI Companion</a>
+                <a href="growth_challenges.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Challenges</a>
+                <a href="wellness_library.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Library</a>
+                <a href="progress_analytics.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Progress</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Crisis Support Banner (Hidden by default, shown when needed) -->
+    <div id="crisis-banner" class="hidden fixed top-16 left-0 right-0 z-40 crisis-banner text-white py-3">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span class="font-medium">We're here for you. If you're in crisis, immediate help is available.</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="javascript:void(0)" class="bg-white text-error font-medium px-4 py-2 rounded-lg hover:bg-error-50 transition-gentle">
+                        Crisis Hotline
+                    </a>
+                    <button id="close-crisis-banner" class="text-white hover:text-error-100 transition-gentle">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="pt-16 min-h-screen bg-gradient-to-br from-primary-50 via-background to-secondary-50 relative overflow-hidden">
+        <!-- Floating Background Elements -->
+        <div class="absolute top-20 left-10 w-32 h-32 gradient-orb rounded-full floating-element opacity-60"></div>
+        <div class="absolute top-40 right-20 w-24 h-24 gradient-orb rounded-full floating-element opacity-40"></div>
+        <div class="absolute bottom-32 left-1/4 w-20 h-20 gradient-orb rounded-full floating-element opacity-50"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Header Section -->
+            <div class="text-center mb-8">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-secondary to-secondary-600 rounded-2xl flex items-center justify-center mr-4">
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+                        </svg>
+                    </div>
+                    <div class="text-left">
+                        <h1 class="text-3xl md:text-4xl font-inter font-bold text-primary mb-2">
+                            Meet EmpathyBot
+                        </h1>
+                        <p class="text-lg text-text-secondary font-source">
+                            Your 24/7 AI companion for emotional support and guidance
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Current Mood Indicator -->
+                <div class="flex items-center justify-center space-x-4 mb-6">
+                    <span class="text-text-secondary font-source">Current mood:</span>
+                    <div class="mood-indicator neutral w-4 h-4 rounded-full" id="mood-indicator"></div>
+                    <span class="text-text-primary font-medium" id="mood-text">Neutral</span>
+                    <button class="text-primary hover:text-primary-600 transition-gentle" onclick="showMoodSelector()">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Interface -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <!-- Main Chat Area -->
+                <div class="lg:col-span-3">
+                    <div class="card h-full">
+                        <!-- Chat Header -->
+                        <div class="flex items-center justify-between border-b border-border-light pb-4 mb-6">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-gradient-to-br from-secondary to-secondary-600 rounded-full flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-inter font-semibold text-primary">EmpathyBot</h3>
+                                    <p class="text-sm text-success">Online • Ready to help</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="p-2 text-text-secondary hover:text-primary transition-gentle rounded-lg hover:bg-surface" title="Search conversations">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                    </svg>
+                                </button>
+                                <button class="p-2 text-text-secondary hover:text-primary transition-gentle rounded-lg hover:bg-surface" title="Settings">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Chat Messages -->
+                        <div class="chat-container overflow-y-auto mb-6 space-y-4" id="chat-messages">
+                            <!-- Welcome Message -->
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-gradient-to-br from-secondary to-secondary-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                    </svg>
+                                </div>
+                                <div class="message-bubble bg-surface rounded-2xl rounded-tl-sm px-4 py-3">
+                                    <p class="text-text-primary font-source">
+                                        Hello! I'm EmpathyBot, your AI companion here to support you on your mental wellness journey. 
+                                        I'm here to listen, understand, and help you navigate whatever you're feeling today. 
+                                        How are you doing right now?
+                                    </p>
+                                    <p class="text-xs text-text-secondary mt-2">Just now</p>
+                                </div>
+                            </div>
+
+                            <!-- Sample User Message -->
+                            <div class="flex items-start space-x-3 justify-end">
+                                <div class="message-bubble bg-primary text-white rounded-2xl rounded-tr-sm px-4 py-3">
+                                    <p class="font-source">
+                                        Hi EmpathyBot. I've been feeling pretty anxious about work lately. 
+                                        There's a big presentation coming up and I can't seem to shake this nervous feeling.
+                                    </p>
+                                    <p class="text-xs text-primary-200 mt-2">2 minutes ago</p>
+                                </div>
+                                <div class="w-8 h-8 bg-gradient-to-br from-primary to-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- AI Response -->
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-gradient-to-br from-secondary to-secondary-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                    </svg>
+                                </div>
+                                <div class="message-bubble bg-surface rounded-2xl rounded-tl-sm px-4 py-3">
+                                    <p class="text-text-primary font-source mb-3">
+                                        I hear you, and it's completely understandable to feel anxious about an important presentation. 
+                                        That nervous energy shows how much you care about doing well, which is actually a strength.
+                                    </p>
+                                    <p class="text-text-primary font-source mb-3">
+                                        Let's work through this together. First, remember that some anxiety before big events is normal and can even help you perform better. 
+                                        Here are a few strategies that might help:
+                                    </p>
+                                    <ul class="text-text-primary font-source space-y-1 mb-3">
+                                        <li>• Practice deep breathing: 4 counts in, hold for 4, out for 6</li>
+                                        <li>• Visualize yourself succeeding in the presentation</li>
+                                        <li>• Prepare thoroughly but avoid over-preparing</li>
+                                        <li>• Remember past successes you've had</li>
+                                    </ul>
+                                    <p class="text-text-primary font-source">
+                                        Would you like to try a quick breathing exercise together, or would you prefer to talk more about what specifically is making you most nervous?
+                                    </p>
+                                    <p class="text-xs text-text-secondary mt-2">1 minute ago</p>
+                                </div>
+                            </div>
+
+                            <!-- Typing Indicator (Hidden by default) -->
+                            <div class="flex items-start space-x-3 typing-indicator hidden" id="typing-indicator">
+                                <div class="w-8 h-8 bg-gradient-to-br from-secondary to-secondary-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                    </svg>
+                                </div>
+                                <div class="bg-surface rounded-2xl rounded-tl-sm px-4 py-3">
+                                    <div class="flex space-x-1">
+                                        <div class="w-2 h-2 bg-text-secondary rounded-full animate-bounce"></div>
+                                        <div class="w-2 h-2 bg-text-secondary rounded-full animate-bounce" style="animation-delay: 0.1s;"></div>
+                                        <div class="w-2 h-2 bg-text-secondary rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Input -->
+                        <div class="border-t border-border-light pt-4">
+                            <div class="flex items-end space-x-3">
+                                <div class="flex-1">
+                                    <textarea 
+                                        id="chat-input" 
+                                        class="chat-input w-full px-4 py-3 border border-border rounded-xl bg-white text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary transition-gentle resize-none" 
+                                        placeholder="Share what's on your mind... I'm here to listen and support you."
+                                        rows="2"
+                                        maxlength="1000"></textarea>
+                                    <div class="flex items-center justify-between mt-2">
+                                        <div class="flex items-center space-x-2">
+                                            <button class="p-2 text-text-secondary hover:text-primary transition-gentle rounded-lg hover:bg-surface" title="Attach file">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                                                </svg>
+                                            </button>
+                                            <button class="p-2 text-text-secondary hover:text-primary transition-gentle rounded-lg hover:bg-surface" title="Voice message">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <span class="text-xs text-text-secondary" id="char-count">0/1000</span>
+                                    </div>
+                                </div>
+                                <button 
+                                    id="send-btn" 
+                                    class="btn-primary px-6 py-3 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    disabled>
+                                    <span>Send</span>
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="lg:col-span-1 space-y-6">
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <h3 class="font-inter font-semibold text-primary mb-4">Quick Actions</h3>
+                        <div class="space-y-3">
+                            <button class="w-full text-left p-3 rounded-lg bg-surface hover:bg-primary-50 transition-gentle group">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-success-100 rounded-lg flex items-center justify-center group-hover:bg-success-200 transition-gentle">
+                                        <svg class="w-4 h-4 text-success" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-text-primary">Breathing Exercise</p>
+                                        <p class="text-sm text-text-secondary">Guided 4-7-8 technique</p>
+                                    </div>
+                                </div>
+                            </button>
+
+                            <button class="w-full text-left p-3 rounded-lg bg-surface hover:bg-primary-50 transition-gentle group">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-warning-100 rounded-lg flex items-center justify-center group-hover:bg-warning-200 transition-gentle">
+                                        <svg class="w-4 h-4 text-warning" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-text-primary">Crisis Support</p>
+                                        <p class="text-sm text-text-secondary">Immediate help available</p>
+                                    </div>
+                                </div>
+                            </button>
+
+                            <button class="w-full text-left p-3 rounded-lg bg-surface hover:bg-primary-50 transition-gentle group">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-accent-100 rounded-lg flex items-center justify-center group-hover:bg-accent-200 transition-gentle">
+                                        <svg class="w-4 h-4 text-accent-600" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20a3 3 0 01-3-3v-2a3 3 0 013-3h10a3 3 0 013 3v2a3 3 0 01-3 3M7 20v-2m0 0V9a5 5 0 0110 0v9m-10 0a3 3 0 003 3h4a3 3 0 003-3"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-text-primary">Professional Help</p>
+                                        <p class="text-sm text-text-secondary">Connect with therapists</p>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Conversation Suggestions -->
+                    <div class="card">
+                        <h3 class="font-inter font-semibold text-primary mb-4">Conversation Starters</h3>
+                        <div class="space-y-2">
+                            <button class="suggestion-card w-full text-left p-3 rounded-lg bg-primary-50 hover:bg-primary-100 transition-all duration-300 text-sm text-text-primary">
+                                "I'm feeling overwhelmed today..."
+                            </button>
+                            <button class="suggestion-card w-full text-left p-3 rounded-lg bg-secondary-50 hover:bg-secondary-100 transition-all duration-300 text-sm text-text-primary">
+                                "Can you help me process my emotions?"
+                            </button>
+                            <button class="suggestion-card w-full text-left p-3 rounded-lg bg-accent-50 hover:bg-accent-100 transition-all duration-300 text-sm text-text-primary">
+                                "I need coping strategies for anxiety"
+                            </button>
+                            <button class="suggestion-card w-full text-left p-3 rounded-lg bg-success-50 hover:bg-success-100 transition-all duration-300 text-sm text-text-primary">
+                                "Let's practice mindfulness together"
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Recent Topics -->
+                    <div class="card">
+                        <h3 class="font-inter font-semibold text-primary mb-4">Recent Topics</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-surface transition-gentle cursor-pointer">
+                                <div class="w-2 h-2 bg-warning rounded-full"></div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-text-primary">Work Anxiety</p>
+                                    <p class="text-xs text-text-secondary">Yesterday</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-surface transition-gentle cursor-pointer">
+                                <div class="w-2 h-2 bg-success rounded-full"></div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-text-primary">Sleep Improvement</p>
+                                    <p class="text-xs text-text-secondary">3 days ago</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-surface transition-gentle cursor-pointer">
+                                <div class="w-2 h-2 bg-secondary rounded-full"></div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-text-primary">Relationship Stress</p>
+                                    <p class="text-xs text-text-secondary">1 week ago</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Privacy Notice -->
+                    <div class="card bg-primary-50 border border-primary-200">
+                        <div class="flex items-start space-x-3">
+                            <svg class="w-5 h-5 text-primary flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M18,8A6,6 0 0,0 12,2A6,6 0 0,0 6,8H4A2,2 0 0,0 2,10V20A2,2 0 0,0 4,22H20A2,2 0 0,0 22,20V10A2,2 0 0,0 20,8H18M12,4A4,4 0 0,1 16,8H8A4,4 0 0,1 12,4Z"/>
+                            </svg>
+                            <div>
+                                <h4 class="font-medium text-primary mb-1">Your Privacy Matters</h4>
+                                <p class="text-sm text-text-secondary">
+                                    All conversations are encrypted and HIPAA-compliant. You have full control over your data.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mood Selector Modal (Hidden by default) -->
+    <div id="mood-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-6 max-w-md w-full">
+            <h3 class="font-inter font-semibold text-primary mb-4">How are you feeling right now?</h3>
+            <div class="grid grid-cols-2 gap-3 mb-6">
+                <button class="mood-option p-4 rounded-lg border-2 border-border hover:border-success transition-gentle" data-mood="happy">
+                    <div class="text-2xl mb-2">😊</div>
+                    <p class="font-medium text-text-primary">Happy</p>
+                </button>
+                <button class="mood-option p-4 rounded-lg border-2 border-border hover:border-primary transition-gentle" data-mood="neutral">
+                    <div class="text-2xl mb-2">😐</div>
+                    <p class="font-medium text-text-primary">Neutral</p>
+                </button>
+                <button class="mood-option p-4 rounded-lg border-2 border-border hover:border-error transition-gentle" data-mood="sad">
+                    <div class="text-2xl mb-2">😢</div>
+                    <p class="font-medium text-text-primary">Sad</p>
+                </button>
+                <button class="mood-option p-4 rounded-lg border-2 border-border hover:border-warning transition-gentle" data-mood="anxious">
+                    <div class="text-2xl mb-2">😰</div>
+                    <p class="font-medium text-text-primary">Anxious</p>
+                </button>
+            </div>
+            <div class="flex space-x-3">
+                <button class="btn-secondary flex-1" onclick="closeMoodSelector()">Cancel</button>
+                <button class="btn-primary flex-1" onclick="updateMood()">Update</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Chat functionality
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+        const chatMessages = document.getElementById('chat-messages');
+        const charCount = document.getElementById('char-count');
+        const typingIndicator = document.getElementById('typing-indicator');
+
+        // Character counter
+        chatInput.addEventListener('input', function() {
+            const length = this.value.length;
+            charCount.textContent = `${length}/1000`;
+            sendBtn.disabled = length === 0;
+        });
+
+        // Send message
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage(message, 'user');
+            chatInput.value = '';
+            charCount.textContent = '0/1000';
+            sendBtn.disabled = true;
+
+            // Show typing indicator
+            showTypingIndicator();
+
+            // Simulate AI response
+            setTimeout(() => {
+                hideTypingIndicator();
+                const responses = [
+                    "I understand how you're feeling. Let's work through this together. What specific aspect would you like to focus on first?",
+                    "Thank you for sharing that with me. Your feelings are completely valid. Would you like to explore some coping strategies that might help?",
+                    "I hear you, and I want you to know that you're not alone in this. Let's take a moment to process what you've shared.",
+                    "That sounds challenging. Remember that it's okay to feel this way, and seeking support shows strength. How can I best help you right now?"
+                ];
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                addMessage(randomResponse, 'ai');
+            }, 2000);
+        }
+
+        // Add message to chat
+        function addMessage(message, sender) {
+            const messageDiv = document.createElement('div');
+            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            if (sender === 'user') {
+                messageDiv.innerHTML = `
+                    <div class="flex items-start space-x-3 justify-end">
+                        <div class="message-bubble bg-primary text-white rounded-2xl rounded-tr-sm px-4 py-3">
+                            <p class="font-source">${message}</p>
+                            <p class="text-xs text-primary-200 mt-2">${timestamp}</p>
+                        </div>
+                        <div class="w-8 h-8 bg-gradient-to-br from-primary to-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                        </div>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-secondary to-secondary-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                        </div>
+                        <div class="message-bubble bg-surface rounded-2xl rounded-tl-sm px-4 py-3">
+                            <p class="text-text-primary font-source">${message}</p>
+                            <p class="text-xs text-text-secondary mt-2">${timestamp}</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Show/hide typing indicator
+        function showTypingIndicator() {
+            typingIndicator.classList.remove('hidden');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            typingIndicator.classList.add('hidden');
+        }
+
+        // Send button click
+        sendBtn.addEventListener('click', sendMessage);
+
+        // Enter key to send
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Mood selector functionality
+        let selectedMood = 'neutral';
+
+        function showMoodSelector() {
+            document.getElementById('mood-modal').classList.remove('hidden');
+        }
+
+        function closeMoodSelector() {
+            document.getElementById('mood-modal').classList.add('hidden');
+        }
+
+        function updateMood() {
+            const moodIndicator = document.getElementById('mood-indicator');
+            const moodText = document.getElementById('mood-text');
+            
+            moodIndicator.className = `mood-indicator ${selectedMood} w-4 h-4 rounded-full`;
+            moodText.textContent = selectedMood.charAt(0).toUpperCase() + selectedMood.slice(1);
+            
+            closeMoodSelector();
+            
+            // Trigger mood-based response
+            const moodResponses = {
+                happy: "I'm so glad to hear you're feeling happy! That's wonderful. What's contributing to your positive mood today?",
+                neutral: "Thank you for sharing your current state. Sometimes neutral is exactly where we need to be. How can I support you today?",
+                sad: "I'm here with you in this difficult moment. It's okay to feel sad, and I want you to know that your feelings are valid. Would you like to talk about what's weighing on your heart?",
+                anxious: "I understand that anxiety can feel overwhelming. You're brave for reaching out. Let's work together to find some calm. Would you like to try a breathing exercise, or would you prefer to talk through what's making you feel anxious?"
+            };
+            
+            setTimeout(() => {
+                addMessage(moodResponses[selectedMood], 'ai');
+            }, 1000);
+        }
+
+        // Mood option selection
+        document.querySelectorAll('.mood-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.mood-option').forEach(opt => {
+                    opt.classList.remove('border-primary', 'bg-primary-50');
+                });
+                this.classList.add('border-primary', 'bg-primary-50');
+                selectedMood = this.dataset.mood;
+            });
+        });
+
+        // Conversation starters
+        document.querySelectorAll('.suggestion-card').forEach(card => {
+            card.addEventListener('click', function() {
+                chatInput.value = this.textContent.trim();
+                chatInput.focus();
+                sendBtn.disabled = false;
+                charCount.textContent = `${chatInput.value.length}/1000`;
+            });
+        });
+
+        // Crisis detection simulation
+        function detectCrisis(message) {
+            const crisisKeywords = ['suicide', 'kill myself', 'end it all', 'can\'t go on', 'want to die'];
+            return crisisKeywords.some(keyword => message.toLowerCase().includes(keyword));
+        }
+
+        // Override sendMessage to include crisis detection
+        const originalSendMessage = sendMessage;
+        sendMessage = function() {
+            const message = chatInput.value.trim();
+            if (detectCrisis(message)) {
+                document.getElementById('crisis-banner').classList.remove('hidden');
+            }
+            originalSendMessage();
+        };
+
+        // Close crisis banner
+        document.getElementById('close-crisis-banner').addEventListener('click', function() {
+            document.getElementById('crisis-banner').classList.add('hidden');
+        });
+
+        // Auto-resize textarea
+        chatInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // Initialize chat
+        document.addEventListener('DOMContentLoaded', function() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

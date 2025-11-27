@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellness Library - MindBloom</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .floating-element:nth-child(2) {
+            animation-delay: -2s;
+        }
+        
+        .floating-element:nth-child(3) {
+            animation-delay: -4s;
+        }
+        
+        .content-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .category-filter.active {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+        }
+        
+        .gradient-orb {
+            background: radial-gradient(circle at 30% 30%, rgba(123, 160, 91, 0.3), rgba(45, 90, 74, 0.1));
+            filter: blur(1px);
+        }
+        
+        .search-highlight {
+            background: linear-gradient(120deg, rgba(232, 184, 109, 0.3) 0%, rgba(232, 184, 109, 0.1) 100%);
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+        
+        .progress-ring-circle {
+            stroke-dasharray: 251.2;
+            stroke-dashoffset: 251.2;
+            transition: stroke-dashoffset 0.35s;
+        }
+        
+        .audio-wave {
+            animation: audioWave 1.5s ease-in-out infinite;
+        }
+        
+        .audio-wave:nth-child(2) { animation-delay: 0.1s; }
+        .audio-wave:nth-child(3) { animation-delay: 0.2s; }
+        .audio-wave:nth-child(4) { animation-delay: 0.3s; }
+        
+        @keyframes audioWave {
+            0%, 100% { height: 4px; }
+            50% { height: 16px; }
+        }
+        
+        .seasonal-banner {
+            background: linear-gradient(135deg, rgba(232, 184, 109, 0.1) 0%, rgba(123, 160, 91, 0.1) 100%);
+            border: 1px solid rgba(232, 184, 109, 0.2);
+        }
+    </style>
+  
+  <script type="module" async src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fmindbloom3946back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.10"></script>
+  <script type="module" defer src="https://static.rocket.new/rocket-shot.js?v=0.0.1"></script>
+  </head>
+<body class="bg-background text-text-primary overflow-x-hidden">
+    <!-- Navigation Header -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-border-light transition-gentle">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-inter font-semibold text-primary">MindBloom</span>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-text-secondary hover:text-primary transition-gentle">Home</a>
+                    <a href="mood_tracker.html" class="text-text-secondary hover:text-primary transition-gentle">Mood Tracker</a>
+                    <a href="ai_companion.html" class="text-text-secondary hover:text-primary transition-gentle">AI Companion</a>
+                    <a href="growth_challenges.html" class="text-text-secondary hover:text-primary transition-gentle">Challenges</a>
+                    <a href="wellness_library.html" class="text-primary font-medium border-b-2 border-primary pb-1">Library</a>
+                    <a href="progress.html" class="text-text-secondary hover:text-primary transition-gentle">Progress</a>
+               <a href="log_in.html" class="text-text-secondary hover:text-primary transition-gentle"><button class="btn-login">Login</button></a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden p-2 rounded-lg hover:bg-surface transition-gentle" id="mobile-menu-btn">
+                    <svg class="w-6 h-6 text-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div class="md:hidden hidden bg-white border-t border-border-light" id="mobile-menu">
+            <div class="px-4 py-2 space-y-1">
+                <a href="homepage.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Home</a>
+                <a href="mood_tracker.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Mood Tracker</a>
+                <a href="ai_companion.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">AI Companion</a>
+                <a href="growth_challenges.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Challenges</a>
+                <a href="wellness_library.html" class="block px-3 py-2 text-primary font-medium bg-primary-50 rounded-lg">Library</a>
+                <a href="progress_analytics.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Progress</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-24 pb-16 bg-gradient-to-br from-primary-50 via-background to-secondary-50 overflow-hidden">
+        <!-- Floating Gradient Orbs -->
+        <div class="absolute top-20 left-10 w-32 h-32 gradient-orb rounded-full floating-element opacity-60"></div>
+        <div class="absolute top-40 right-20 w-24 h-24 gradient-orb rounded-full floating-element opacity-40"></div>
+        <div class="absolute bottom-32 left-1/4 w-20 h-20 gradient-orb rounded-full floating-element opacity-50"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-inter font-bold text-primary mb-6">
+                    Your Wellness <span class="text-gradient-primary">Knowledge Sanctuary</span>
+                </h1>
+                <p class="text-lg text-text-secondary max-w-3xl mx-auto font-source leading-relaxed">
+                    Discover curated resources, expert insights, and interactive tools designed to support your mental wellness journey. 
+                    From evidence-based articles to guided meditations, find exactly what you need for your current emotional state.
+                </p>
+            </div>
+
+            <!-- Search and Filter Bar -->
+            <div class="max-w-4xl mx-auto mb-12">
+                <div class="flex flex-col md:flex-row gap-4 items-center">
+                    <!-- Search Input -->
+                    <div class="relative flex-1 w-full">
+                        <input type="text" 
+                               placeholder="Search articles, meditations, exercises..." 
+                               class="input-field pl-12 pr-4"
+                               id="search-input">
+                        <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    
+                    <!-- Filter Button -->
+                    <button class="btn-secondary flex items-center space-x-2 whitespace-nowrap" id="filter-btn">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                        </svg>
+                        <span>Filter</span>
+                    </button>
+                    
+                    <!-- Reset Button -->
+                    <button class="btn-accent flex items-center space-x-2" id="reset-btn">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                        <span>Reset</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seasonal Wellness Campaign Banner -->
+    <section class="py-8 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="seasonal-banner rounded-2xl p-6 md:p-8">
+                <div class="flex flex-col md:flex-row items-center justify-between">
+                    <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                        <div class="w-16 h-16 bg-gradient-to-br from-accent to-accent-600 rounded-2xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-inter font-semibold text-primary mb-1">Winter Wellness Series</h3>
+                            <p class="text-text-secondary font-source">Seasonal strategies for maintaining mental health during colder months</p>
+                        </div>
+                    </div>
+                    <button class="btn-primary">Explore Series</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category Filters -->
+    <section class="py-8 bg-surface">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-wrap gap-3 justify-center">
+                <button class="category-filter active px-6 py-3 rounded-full font-medium transition-gentle border border-border" data-category="all">
+                    All Content
+                </button>
+                <button class="category-filter px-6 py-3 rounded-full font-medium transition-gentle border border-border hover:bg-primary-50" data-category="articles">
+                    Articles
+                </button>
+                <button class="category-filter px-6 py-3 rounded-full font-medium transition-gentle border border-border hover:bg-primary-50" data-category="meditations">
+                    Meditations
+                </button>
+                <button class="category-filter px-6 py-3 rounded-full font-medium transition-gentle border border-border hover:bg-primary-50" data-category="exercises">
+                    Exercises
+                </button>
+                <button class="category-filter px-6 py-3 rounded-full font-medium transition-gentle border border-border hover:bg-primary-50" data-category="expert">
+                    Expert Insights
+                </button>
+                <button class="category-filter px-6 py-3 rounded-full font-medium transition-gentle border border-border hover:bg-primary-50" data-category="tools">
+                    Interactive Tools
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Content -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-inter font-bold text-primary mb-4">Featured This Week</h2>
+                <p class="text-lg text-text-secondary max-w-2xl mx-auto font-source">
+                    Handpicked resources to support your current wellness journey
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+                <!-- Featured Article -->
+                <div class="lg:col-span-2">
+                    <div class="content-card card hover:shadow-organic-lg transition-all duration-400 cursor-pointer h-full">
+                        <div class="relative mb-6">
+                            <img src="https://images.unsplash.com/photo-1478029402145-8c3bc06b7325" 
+                                 alt="Person practicing mindfulness meditation in a peaceful natural setting, representing emotional regulation techniques" 
+                                 class="w-full h-64 object-cover rounded-xl"
+                                 onerror="this.src='https://images.unsplash.com/photo-1544027993-37dbfe43562a?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                            <div class="absolute top-4 left-4">
+                                <span class="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium">Featured Article</span>
+                            </div>
+                            <div class="absolute top-4 right-4 flex items-center space-x-2">
+                                <div class="bg-white/90 backdrop-blur-sm rounded-full p-2">
+                                    <svg class="w-5 h-5 text-accent-600" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                </div>
+                                <div class="bg-white/90 backdrop-blur-sm rounded-full p-2">
+                                    <svg class="w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="flex items-center space-x-2">
+                                <img src="https://img.rocket.new/generatedImages/rocket_gen_img_1a45a04c8-1762274409537.png" 
+                                     alt="Dr. Sarah Chen, licensed clinical psychologist and mindfulness expert" 
+                                     class="w-8 h-8 rounded-full object-cover"
+                                     onerror="this.src='https://img.rocket.new/generatedImages/rocket_gen_img_10ee538bb-1762274616848.png'; this.onerror=null;">
+                                <span class="text-sm font-medium text-text-primary">Dr. Sarah Chen</span>
+                            </div>
+                            <span class="text-sm text-text-secondary">•</span>
+                            <span class="text-sm text-text-secondary">8 min read</span>
+                            <span class="text-sm text-text-secondary">•</span>
+                            <span class="text-sm text-text-secondary">Nov 7, 2025</span>
+                        </div>
+                        <h3 class="text-2xl font-inter font-bold text-primary mb-3">
+                            Understanding Emotional Regulation: A Science-Based Approach
+                        </h3>
+                        <p class="text-text-secondary font-source mb-6 leading-relaxed">
+                            Discover evidence-based techniques for managing intense emotions and building resilience. 
+                            Learn how neuroscience research informs practical strategies for emotional well-being.
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center space-x-1">
+                                    <svg class="w-4 h-4 text-accent-600" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    <span class="text-sm text-text-secondary">4.9</span>
+                                </div>
+                                <div class="flex items-center space-x-1">
+                                    <svg class="w-4 h-4 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                    </svg>
+                                    <span class="text-sm text-text-secondary">127</span>
+                                </div>
+                            </div>
+                            <button class="text-primary font-medium hover:text-primary-600 transition-gentle">
+                                Read Article →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Featured Meditation -->
+                <div class="space-y-8">
+                    <div class="content-card card hover:shadow-organic-lg transition-all duration-400 cursor-pointer">
+                        <div class="relative mb-4">
+                            <img src="https://images.unsplash.com/photo-1618219629869-9ef11e2d7701" 
+                                 alt="Serene meditation space with soft lighting and natural elements for guided mindfulness practice" 
+                                 class="w-full h-32 object-cover rounded-lg"
+                                 onerror="this.src='https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                            <div class="absolute inset-0 bg-black/20 rounded-lg flex items-center justify-center">
+                                <div class="bg-white/90 backdrop-blur-sm rounded-full p-3">
+                                    <svg class="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="bg-secondary-100 text-secondary-700 px-2 py-1 rounded text-xs font-medium">Meditation</span>
+                            <span class="text-sm text-text-secondary">12 min</span>
+                        </div>
+                        <h4 class="font-inter font-semibold text-primary mb-2">Morning Mindfulness Reset</h4>
+                        <p class="text-sm text-text-secondary font-source mb-4">
+                            Start your day with clarity and intention through this gentle guided meditation.
+                        </p>
+                        <div class="flex items-center space-x-2">
+                            <div class="flex space-x-1">
+                                <div class="audio-wave bg-secondary w-1 h-4 rounded-full"></div>
+                                <div class="audio-wave bg-secondary w-1 h-4 rounded-full"></div>
+                                <div class="audio-wave bg-secondary w-1 h-4 rounded-full"></div>
+                                <div class="audio-wave bg-secondary w-1 h-4 rounded-full"></div>
+                            </div>
+                            <span class="text-xs text-text-secondary">Playing...</span>
+                        </div>
+                    </div>
+
+                    <!-- Featured Exercise -->
+                    <div class="content-card card hover:shadow-organic-lg transition-all duration-400 cursor-pointer">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-accent to-accent-600 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <span class="bg-accent-100 text-accent-700 px-2 py-1 rounded text-xs font-medium">Exercise</span>
+                                <h4 class="font-inter font-semibold text-primary">5-4-3-2-1 Grounding</h4>
+                            </div>
+                        </div>
+                        <p class="text-sm text-text-secondary font-source mb-4">
+                            A powerful technique to anchor yourself in the present moment during anxiety or overwhelm.
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-text-secondary">5 min exercise</span>
+                            <button class="text-accent-600 font-medium text-sm hover:text-accent-700 transition-gentle">
+                                Try Now →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Library Grid -->
+    <section class="py-16 bg-surface">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between mb-12">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-inter font-bold text-primary mb-2">Wellness Library</h2>
+                    <p class="text-text-secondary font-source">Explore our comprehensive collection of mental wellness resources</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <select class="input-field w-auto" id="sort-select">
+                        <option value="newest">Newest First</option>
+                        <option value="popular">Most Popular</option>
+                        <option value="rating">Highest Rated</option>
+                        <option value="duration">Duration</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="content-grid">
+                <!-- Article Card 1 -->
+                <div class="content-card card hover:shadow-organic-lg transition-all duration-400 cursor-pointer" data-category="articles">
+                    <div class="relative mb-4">
+                        <img src="https://images.unsplash.com/photo-1714976694999-21236f6d5201" 
+                             alt="Professional therapist in a calming office environment discussing stress management techniques" 
+                             class="w-full h-48 object-cover rounded-lg"
+                             onerror="this.src='https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;">
+                        <div class="absolute top-3 left-3">
+                            <span class="bg-primary text-white px-2 py-1 rounded text-xs font-medium">Article</span>
+                        </div>
+                        <div class="absolute top-3 right-3">
+                            <button class="bg-white/90 backdrop-blur-sm rounded-full p-2 hover:bg-white transition-gentle">
+                                <svg class="w-4 h-4 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 mb-3">
+                        <img src="https://img.rocket.new/generatedImages/rocket_gen_img_10ee538bb-1762274616848.png" 
+                             alt="Dr. Michael Rodriguez, stress management specialist and clinical psychologist" 
+                             class="w-6 h-6 rounded-full object-cover"
+                             onerror="this.src='https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                        <span class="text-sm font-medium text-text-primary">Dr. Michael Rodriguez</span>
+                        <span class="text-sm text-text-secondary">• 6 min read</span>
+                    </div>
+                    <h3 class="text-lg font-inter font-semibold text-primary mb-2">
+                        Managing Work-Related Stress: Evidence-Based Strategies
+                    </h3>
+                    <p class="text-text-secondary font-source text-sm mb-4 leading-relaxed">
+                        Learn practical techniques to reduce workplace stress and maintain mental well-being in demanding environments.
+                    </p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="flex items-center space-x-1">
+                                <svg class="w-4 h-4 text-accent-600" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                                <span class="text-sm text-text-secondary">4.7</span>
+                            </div>
+                            <span class="text-sm text-text-secondary">Nov 5, 2025</span>
+                        </div>
+                        <button class="text-primary font-medium text-sm hover:text-primary-600 transition-gentle">
+                            Read →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Meditation Card 1 -->
+                <div class="content-card card hover:shadow-organic-lg transition-all duration-400 cursor-pointer" data-category="meditations">
+                    <div class="relative mb-4">
+                        <img src="https://images.unsplash.com/photo-1693936472247-6fd900ab06e7" 
+                             alt="Peaceful nighttime meditation scene with stars and calm atmosphere for sleep preparation" 
+                             class="w-full h-48 object-cover rounded-lg"
+                             onerror="this.src='https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                        <div class="absolute inset-0 bg-black/20 rounded-lg flex items-center justify-center">
+                            <div class="bg-white/90 backdrop-blur-sm rounded-full p-3">
+                                <svg class="w-6 h-6 text-secondary" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 left-3">
+                            <span class="bg-secondary text-white px-2 py-1 rounded text-xs font-medium">Meditation</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm font-medium text-text-primary">Evening Wind Down</span>
+                        <span class="text-sm text-text-secondary">15 min</span>
+                    </div>
+                    <p class="text-text-secondary font-source text-sm mb-4 leading-relaxed">
+                        Release the day's tension and prepare your mind for restful sleep with this calming guided meditation.
+                    </p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-1">
+                            <svg class="w-4 h-4 text-accent-600" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <span class="text-sm text-text-secondary">4.8</span>
+                            <span class="text-sm text-text-secondary">• 2.3k plays</span>
+                        </div>
+                        <button class="text-secondary font-medium text-sm hover:text-secondary-600 transition-gentle">
+                            Play →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Interactive Tool Card -->
+                <div class="content-card card hover:shadow-organic-lg transition-all duration-400 cursor-pointer" data-category="tools">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-accent to-accent-600 rounded-2xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <span class="bg-accent-100 text-accent-700 px-2 py-1 rounded text-xs font-medium">Interactive Tool</span>
+                            <h3 class="text-lg font-inter font-semibold text-primary">Mood Booster Generator</h3>
+                        </div>
+                    </div>
+                    <p class="text-text-secondary font-source text-sm mb-6 leading-relaxed">
+                        Get personalized activities and coping strategies based on your current emotional state and preferences.
+                    </p>
+                    <div class="space-y-3 mb-6">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-success rounded-full"></div>
+                            <span class="text-sm text-text-secondary">Personalized recommendations</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-success rounded-full"></div>
+                            <span class="text-sm text-text-secondary">Evidence-based activities</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-success rounded-full"></div>
+                            <span class="text-sm text-text-secondary">Track effectiveness</span>
+                        </div>
+                    </div>
+                    <button class="btn-accent w-full">Try Tool</button>
+                </div>
+
+                <!-- Expert Insight Card -->
+                <div class="content-card card hover:shadow-organic-lg transition-all duration-400 cursor-pointer" data-category="expert">
+                    <div class="relative mb-4">
+                        <img src="https://images.unsplash.com/photo-1624957866395-ef59c756e4d9" 
+                             alt="Dr. Emily Watson, neuroscientist and resilience researcher, in her laboratory setting" 
+                             class="w-full h-48 object-cover rounded-lg"
+                             onerror="this.src='https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;">
+                        <div class="absolute top-3 left-3">
+                            <span class="bg-success text-white px-2 py-1 rounded text-xs font-medium">Expert Insight</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 mb-3">
+                        <img src="https://images.unsplash.com/photo-1618281228519-81136b42f6e8" 
+                             alt="Dr. Emily Watson, neuroscientist specializing in resilience and brain plasticity research" 
+                             class="w-6 h-6 rounded-full object-cover"
+                             onerror="this.src='https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;">
+                        <span class="text-sm font-medium text-text-primary">Dr. Emily Watson</span>
+                        <span class="text-sm text-text-secondary">• Neuroscientist</span>
+                    </div>
+                    <h3 class="text-lg font-inter font-semibold text-primary mb-2">
+                        The Science of Resilience: How Your Brain Adapts
+                    </h3>
+                    <p class="text-text-secondary font-source text-sm mb-4 leading-relaxed">
+                        Explore cutting-edge research on neuroplasticity and how understanding your brain can enhance mental resilience.
+                    </p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="flex items-center space-x-1">
+                                <svg class="w-4 h-4 text-accent-600" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                                <span class="text-sm text-text-secondary">4.9</span>
+                            </div>
+                            <span class="text-sm text-text-secondary">Nov 3, 2025</span>
+                        </div>
+                        <button class="text-success font-medium text-sm hover:text-success-600 transition-gentle">
+                            Read →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Exercise Card -->
+                <div class="content-card card hover:shadow-organic-lg transition-all duration-400 cursor-pointer" data-category="exercises">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-secondary to-secondary-600 rounded-2xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <span class="bg-secondary-100 text-secondary-700 px-2 py-1 rounded text-xs font-medium">Exercise</span>
+                            <h3 class="text-lg font-inter font-semibold text-primary">Progressive Muscle Relaxation</h3>
+                        </div>
+                    </div>
+                    <p class="text-text-secondary font-source text-sm mb-4 leading-relaxed">
+                        Learn to systematically release physical tension and achieve deep relaxation through guided muscle exercises.
+                    </p>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-sm text-text-secondary">Duration: 10-15 minutes</span>
+                        <span class="text-sm text-text-secondary">Difficulty: Beginner</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-1">
+                            <svg class="w-4 h-4 text-accent-600" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <span class="text-sm text-text-secondary">4.6</span>
+                            <span class="text-sm text-text-secondary">• 1.8k completions</span>
+                        </div>
+                        <button class="text-secondary font-medium text-sm hover:text-secondary-600 transition-gentle">
+                            Start →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Micro-Learning Card -->
+                <div class="content-card card hover:shadow-organic-lg transition-all duration-400 cursor-pointer" data-category="articles">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-primary to-primary-600 rounded-2xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <span class="bg-primary-100 text-primary-700 px-2 py-1 rounded text-xs font-medium">Micro-Learning</span>
+                            <h3 class="text-lg font-inter font-semibold text-primary">Understanding Anxiety Triggers</h3>
+                        </div>
+                    </div>
+                    <p class="text-text-secondary font-source text-sm mb-4 leading-relaxed">
+                        A bite-sized lesson on identifying and managing personal anxiety triggers through mindful awareness.
+                    </p>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-sm text-text-secondary">3 min lesson</span>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-16 h-2 bg-border rounded-full overflow-hidden">
+                                <div class="w-3/4 h-full bg-primary rounded-full"></div>
+                            </div>
+                            <span class="text-xs text-text-secondary">75%</span>
+                        </div>
+                    </div>
+                    <button class="btn-primary w-full">Continue Learning</button>
+                </div>
+            </div>
+
+            <!-- Load More Button -->
+            <div class="text-center mt-12">
+                <button class="btn-secondary px-8 py-3" id="load-more-btn">
+                    Load More Content
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Personal Library Section -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-inter font-bold text-primary mb-4">Your Personal Library</h2>
+                <p class="text-lg text-text-secondary max-w-2xl mx-auto font-source">
+                    Saved resources and personalized recommendations based on your wellness journey
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Saved Items -->
+                <div class="card text-center">
+                    <div class="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-inter font-semibold text-primary mb-2">Saved Items</h3>
+                    <p class="text-text-secondary font-source mb-4">23 articles, meditations & tools</p>
+                    <button class="btn-primary w-full">View Saved</button>
+                </div>
+
+                <!-- Reading History -->
+                <div class="card text-center">
+                    <div class="w-16 h-16 bg-secondary-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-inter font-semibold text-primary mb-2">Reading History</h3>
+                    <p class="text-text-secondary font-source mb-4">47 items completed this month</p>
+                    <button class="btn-secondary w-full">View History</button>
+                </div>
+
+                <!-- Recommendations -->
+                <div class="card text-center">
+                    <div class="w-16 h-16 bg-accent-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-accent-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-inter font-semibold text-primary mb-2">For You</h3>
+                    <p class="text-text-secondary font-source mb-4">12 personalized recommendations</p>
+                    <button class="btn-accent w-full">Explore</button>
+                </div>
+
+                <!-- Learning Progress -->
+                <div class="card text-center">
+                    <div class="w-16 h-16 bg-success-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-inter font-semibold text-primary mb-2">Progress</h3>
+                    <p class="text-text-secondary font-source mb-4">85% monthly learning goal</p>
+                    <button class="btn-primary w-full">View Stats</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-accent to-accent-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-inter font-semibold">MindBloom</span>
+                    </div>
+                    <p class="text-primary-200 font-source mb-4 max-w-md">
+                        Your comprehensive digital sanctuary for mental wellness. Nurture your mental health through daily care and attention.
+                    </p>
+                    <p class="text-primary-300 text-sm">© 2025 MindBloom. All Rights Reserved.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-inter font-semibold mb-4">Features</h4>
+                    <ul class="space-y-2 text-primary-200">
+                        <li><a href="mood_tracker.html" class="hover:text-white transition-gentle">Mood Tracker</a></li>
+                        <li><a href="ai_companion.html" class="hover:text-white transition-gentle">AI Companion</a></li>
+                        <li><a href="growth_challenges.html" class="hover:text-white transition-gentle">Growth Challenges</a></li>
+                        <li><a href="progress_analytics.html" class="hover:text-white transition-gentle">Progress Analytics</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-inter font-semibold mb-4">Resources</h4>
+                    <ul class="space-y-2 text-primary-200">
+                        <li><a href="wellness_library.html" class="hover:text-white transition-gentle">Wellness Library</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-white transition-gentle">Crisis Support</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-white transition-gentle">Privacy Policy</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-white transition-gentle">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Category filter functionality
+        const categoryFilters = document.querySelectorAll('.category-filter');
+        const contentCards = document.querySelectorAll('.content-card');
+
+        categoryFilters.forEach(filter => {
+            filter.addEventListener('click', function() {
+                // Remove active class from all filters
+                categoryFilters.forEach(f => f.classList.remove('active'));
+                // Add active class to clicked filter
+                this.classList.add('active');
+
+                const category = this.getAttribute('data-category');
+                
+                // Filter content cards
+                contentCards.forEach(card => {
+                    if (category === 'all' || card.getAttribute('data-category') === category) {
+                        card.style.display = 'block';
+                        card.classList.add('animate-gentle-fade');
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            contentCards.forEach(card => {
+                const title = card.querySelector('h3, h4').textContent.toLowerCase();
+                const description = card.querySelector('p').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    // Highlight search terms
+                    if (searchTerm) {
+                        const titleElement = card.querySelector('h3, h4');
+                        const descElement = card.querySelector('p');
+                        
+                        titleElement.innerHTML = titleElement.textContent.replace(
+                            new RegExp(searchTerm, 'gi'), 
+                            '<span class="search-highlight">$&</span>'
+                        );
+                        descElement.innerHTML = descElement.textContent.replace(
+                            new RegExp(searchTerm, 'gi'), 
+                            '<span class="search-highlight">$&</span>'
+                        );
+                    }
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Sort functionality
+        const sortSelect = document.getElementById('sort-select');
+        sortSelect.addEventListener('change', function() {
+            const sortBy = this.value;
+            const contentGrid = document.getElementById('content-grid');
+            const cards = Array.from(contentGrid.children);
+            
+            cards.sort((a, b) => {
+                switch(sortBy) {
+                    case 'newest':
+                        // Sort by date (mock implementation)
+                        return Math.random() - 0.5;
+                    case 'popular':
+                        // Sort by rating (mock implementation)
+                        const ratingA = parseFloat(a.querySelector('.text-accent-600 + span')?.textContent || '0');
+                        const ratingB = parseFloat(b.querySelector('.text-accent-600 + span')?.textContent || '0');
+                        return ratingB - ratingA;
+                    case 'rating':
+                        // Sort by rating
+                        const ratingA2 = parseFloat(a.querySelector('.text-accent-600 + span')?.textContent || '0');
+                        const ratingB2 = parseFloat(b.querySelector('.text-accent-600 + span')?.textContent || '0');
+                        return ratingB2 - ratingA2;
+                    case 'duration':
+                        // Sort by duration (mock implementation)
+                        return Math.random() - 0.5;
+                    default:
+                        return 0;
+                }
+            });
+            
+            // Re-append sorted cards
+            cards.forEach(card => contentGrid.appendChild(card));
+        });
+
+        // Filter button functionality
+        document.getElementById('filter-btn').addEventListener('click', function() {
+            // Toggle filter panel (mock implementation)
+            alert('Advanced filter options would appear here');
+        });
+
+        // Reset button functionality
+        document.getElementById('reset-btn').addEventListener('click', function() {
+            // Reset all filters and search
+            searchInput.value = '';
+            sortSelect.value = 'newest';
+            
+            // Reset category filter
+            categoryFilters.forEach(f => f.classList.remove('active'));
+            categoryFilters[0].classList.add('active');
+            
+            // Show all cards
+            contentCards.forEach(card => {
+                card.style.display = 'block';
+                // Remove search highlights
+                const titleElement = card.querySelector('h3, h4');
+                const descElement = card.querySelector('p');
+                titleElement.innerHTML = titleElement.textContent;
+                descElement.innerHTML = descElement.textContent;
+            });
+        });
+
+        // Load more functionality
+        document.getElementById('load-more-btn').addEventListener('click', function() {
+            // Mock load more functionality
+            this.textContent = 'Loading...';
+            setTimeout(() => {
+                this.textContent = 'Load More Content';
+                // In a real app, this would load more content
+            }, 1000);
+        });
+
+        // Audio wave animation for meditation cards
+        const audioWaves = document.querySelectorAll('.audio-wave');
+        setInterval(() => {
+            audioWaves.forEach(wave => {
+                wave.style.height = Math.random() * 16 + 4 + 'px';
+            });
+        }, 200);
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll-triggered animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-gentle-fade');
+                }
+            });
+        }, observerOptions);
+
+        // Observe content cards for animation
+        document.querySelectorAll('.content-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Bookmark functionality
+        document.querySelectorAll('.content-card').forEach(card => {
+            const bookmarkBtn = card.querySelector('svg[viewBox="0 0 24 24"]')?.closest('button');
+            if (bookmarkBtn) {
+                bookmarkBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const svg = this.querySelector('svg');
+                    if (svg.getAttribute('fill') === 'none') {
+                        svg.setAttribute('fill', 'currentColor');
+                        svg.classList.add('text-accent-600');
+                        this.classList.add('bg-accent-100');
+                    } else {
+                        svg.setAttribute('fill', 'none');
+                        svg.classList.remove('text-accent-600');
+                        this.classList.remove('bg-accent-100');
+                    }
+                });
+            }
+        });
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

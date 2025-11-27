@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloomMind - Your Mental Wellness Journey Begins Here</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .floating-element:nth-child(2) {
+            animation-delay: -2s;
+        }
+        
+        .floating-element:nth-child(3) {
+            animation-delay: -4s;
+        }
+        
+        .hero-3d-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .scroll-indicator {
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) scale(1);
+                opacity: 0.6;
+            }
+            50% { 
+                transform: translateY(-20px) scale(1.05);
+                opacity: 0.8;
+            }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-12px) scale(1.02);
+        }
+        
+        .theme-forest {
+            background: linear-gradient(135deg, #2d5a4a 0%, #1a3d2e 50%, #0f2a1f 100%);
+        }
+        
+        .theme-ocean {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #3b82f6 100%);
+        }
+        
+        .theme-space {
+            background: linear-gradient(135deg, #1f1937 0%, #2d1b69 50%, #4c1d95 100%);
+        }
+        
+        .theme-sunset {
+            background: linear-gradient(135deg, #dc2626 0%, #ea580c 50%, #f59e0b 100%);
+        }
+        
+        .gradient-orb {
+            background: radial-gradient(circle at 30% 30%, rgba(123, 160, 91, 0.4), rgba(45, 90, 74, 0.1));
+            filter: blur(1px);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        .theme-switch {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .theme-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .theme-btn:hover {
+            transform: scale(1.1);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .theme-btn.active {
+            border-color: #fff;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+        
+        .theme-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+        
+        .theme-btn.forest::before {
+            background: linear-gradient(45deg, #2d5a4a, #7ba05b);
+        }
+        
+        .theme-btn.ocean::before {
+            background: linear-gradient(45deg, #1e3a8a, #3b82f6);
+        }
+        
+        .theme-btn.space::before {
+            background: linear-gradient(45deg, #1f1937, #4c1d95);
+        }
+        
+        .theme-btn.sunset::before {
+            background: linear-gradient(45deg, #dc2626, #f59e0b);
+        }
+        
+        .interactive-3d-element {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .interactive-3d-element:hover {
+            transform: scale(1.1);
+        }
+        
+        .shimmer-text {
+            background: linear-gradient(90deg, 
+                rgba(255,255,255,0.1) 0%, 
+                rgba(255,255,255,0.3) 50%, 
+                rgba(255,255,255,0.1) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+        
+        .morphing-shape {
+            animation: morph 8s ease-in-out infinite;
+        }
+        
+        @keyframes morph {
+            0%, 100% {
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            }
+            50% {
+                border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+            }
+        }
+        
+        .particle-trail {
+            position: absolute;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        @media (max-width: 768px) {
+            .theme-switch {
+                right: 10px;
+                padding: 10px;
+            }
+            
+            .theme-btn {
+                width: 35px;
+                height: 35px;
+            }
+        }
+        .btn-login{
+            display: inline-block;
+            background-color: green;
+            width: 80px;
+            height: 40px;
+            border-radius: 50px;
+            color: white;
+
+        }
+    </style>
+  
+  <script type="module" async src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fmindbloom3946back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.9"></script>
+  <script type="module" defer src="https://static.rocket.new/rocket-shot.js?v=0.0.1"></script>
+  </head>
+<body class="bg-background text-text-primary overflow-x-hidden">
+    <!-- Theme Switcher -->
+    <div class="theme-switch">
+        <div class="theme-btn forest active" data-theme="forest" title="Forest Theme"></div>
+        <div class="theme-btn ocean" data-theme="ocean" title="Ocean Theme"></div>
+        <div class="theme-btn space" data-theme="space" title="Space Theme"></div>
+        <div class="theme-btn sunset" data-theme="sunset" title="Sunset Theme"></div>
+    </div>
+
+    <!-- Navigation Header -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-border-light transition-gentle">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-inter font-semibold text-primary">BloomMind </span>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-primary font-medium border-b-2 border-primary pb-1">Home</a>
+                    <a href="mood_tracker.html" class="text-text-secondary hover:text-primary transition-gentle">Mood Tracker</a>
+                    <a href="ai_companion.html" class="text-text-secondary hover:text-primary transition-gentle">AI Companion</a>
+                    <a href="growth_challenges.html" class="text-text-secondary hover:text-primary transition-gentle">Challenges</a>
+                    <a href="wellness_library.html" class="text-text-secondary hover:text-primary transition-gentle">Library</a>
+                    <a href="progress.html" class="text-text-secondary hover:text-primary transition-gentle">Progress</a>
+                    <a href="log_in.html" class="text-text-secondary hover:text-primary transition-gentle"><button class="btn-login">Login</button></a>
+
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden p-2 rounded-lg hover:bg-surface transition-gentle" id="mobile-menu-btn">
+                    <svg class="w-6 h-6 text-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div class="md:hidden hidden bg-white border-t border-border-light" id="mobile-menu">
+            <div class="px-4 py-2 space-y-1">
+                <a href="homepage.html" class="block px-3 py-2 text-primary font-medium bg-primary-50 rounded-lg">Home</a>
+                <a href="mood_tracker.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Mood Tracker</a>
+                <a href="ai_companion.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">AI Companion</a>
+                <a href="growth_challenges.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Challenges</a>
+                <a href="wellness_library.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Library</a>
+                <a href="progress_analytics.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Progress</a>
+                <a href="login.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle"><button class="btn-login">Login</button></a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Advanced 3D Elements -->
+    <section id="hero-section" class="relative min-h-screen flex items-center justify-center overflow-hidden theme-forest">
+        <!-- 3D Canvas Background -->
+        <canvas id="hero-3d-canvas" class="hero-3d-canvas"></canvas>
+        
+        <!-- Dynamic Floating Elements -->
+        <div class="absolute top-20 left-10 w-32 h-32 gradient-orb rounded-full floating-element opacity-60 morphing-shape"></div>
+        <div class="absolute top-40 right-20 w-24 h-24 gradient-orb rounded-full floating-element opacity-40 morphing-shape"></div>
+        <div class="absolute bottom-32 left-1/4 w-20 h-20 gradient-orb rounded-full floating-element opacity-50 morphing-shape"></div>
+        <div class="absolute top-1/3 right-1/3 w-16 h-16 gradient-orb rounded-full floating-element opacity-30 morphing-shape"></div>
+        <div class="absolute bottom-40 right-10 w-28 h-28 gradient-orb rounded-full floating-element opacity-45 morphing-shape"></div>
+
+        <!-- Interactive 3D Elements -->
+        <div class="interactive-3d-element absolute top-1/4 left-20 w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl opacity-70 transform rotate-45" data-3d-element="crystal"></div>
+        <div class="interactive-3d-element absolute bottom-1/3 right-1/4 w-10 h-10 bg-gradient-to-br from-accent to-accent-600 rounded-full opacity-60" data-3d-element="orb"></div>
+        <div class="interactive-3d-element absolute top-1/2 left-1/3 w-8 h-8 bg-gradient-to-br from-secondary to-primary rounded-lg opacity-50 transform rotate-12" data-3d-element="gem"></div>
+
+        <!-- Hero Content -->
+        <div class="hero-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="animate-gentle-fade">
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-inter font-bold text-white mb-6 leading-tight shimmer-text">
+                    Your Mental Wellness
+                    <span class="text-gradient-primary block bg-gradient-to-r from-white via-primary-100 to-white bg-clip-text text-transparent">Journey Begins Here</span>
+                </h1>
+                
+                <p class="text-lg md:text-xl text-white/90 max-w-3xl mx-auto mb-8 font-source leading-relaxed backdrop-blur-sm bg-white/10 rounded-2xl p-6">
+                    MindBloom is your comprehensive digital sanctuary that transcends traditional mental health apps. 
+                    Discover a holistic approach to emotional growth through mood tracking, AI-powered support, 
+                    and gamified personal development in an immersive 3D environment.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+                    <a href="login.html" class="bg-white/20 backdrop-blur-md text-white border border-white/30 text-lg px-8 py-4 rounded-2xl shadow-2xl hover:bg-white/30 hover:scale-105 transition-all duration-300">
+                        Start Your Journey
+                    </a>
+                    <a href="ai_companion.html" class="bg-gradient-to-r from-primary to-secondary text-white text-lg px-8 py-4 rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300">
+                        Meet Your AI Companion
+                    </a>
+                </div>
+
+                <!-- Enhanced Key Messages -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-16">
+                    <div class="text-center backdrop-blur-md bg-white/10 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300">
+                        <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-3">
+                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                        <p class="text-white/90 font-source">Your mental wellness journey is unique and valid</p>
+                    </div>
+                    <div class="text-center backdrop-blur-md bg-white/10 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300">
+                        <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-3">
+                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <p class="text-white/90 font-source">Small daily actions create profound transformation</p>
+                    </div>
+                    <div class="text-center backdrop-blur-md bg-white/10 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300">
+                        <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-3">
+                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20a3 3 0 01-3-3v-2a3 3 0 013-3h10a3 3 0 013 3v2a3 3 0 01-3 3M7 20v-2m0 0V9a5 5 0 0110 0v9m-10 0a3 3 0 003 3h4a3 3 0 003-3"/>
+                            </svg>
+                        </div>
+                        <p class="text-white/90 font-source">You're not alone in this journey</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced Scroll Indicator -->
+            <div class="scroll-indicator">
+                <div class="w-8 h-8 border-2 border-white/60 rounded-full mx-auto flex items-center justify-center">
+                    <svg class="w-4 h-4 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Core Features Section -->
+    <section class="py-20 bg-gradient-to-br from-white via-primary-50/30 to-secondary-50/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-inter font-bold text-primary mb-4">
+                    Four Pillars of Mental Wellness
+                </h2>
+                <p class="text-lg text-text-secondary max-w-2xl mx-auto font-source">
+                    Discover our comprehensive approach to mental health through interconnected tools designed for your unique journey.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Enhanced MindEase Tracker -->
+                <div class="feature-card card hover:shadow-2xl transition-all duration-500 cursor-pointer group relative overflow-hidden" onclick="window.location.href='mood_tracker.html'">
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 bg-gradient-to-br from-primary to-primary-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-400">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-inter font-semibold text-primary mb-3">MindEase Tracker</h3>
+                        <p class="text-text-secondary font-source mb-4">
+                            Comprehensive mood logging with visual data representations and pattern recognition to understand your emotional landscape.
+                        </p>
+                        <div class="flex items-center text-primary font-medium">
+                            <span>Track Your Mood</span>
+                            <svg class="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced EmpathyBot Companion -->
+                <div class="feature-card card hover:shadow-2xl transition-all duration-500 cursor-pointer group relative overflow-hidden" onclick="window.location.href='ai_companion.html'">
+                    <div class="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 bg-gradient-to-br from-secondary to-secondary-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-400">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-inter font-semibold text-primary mb-3">EmpathyBot Companion</h3>
+                        <p class="text-text-secondary font-source mb-4">
+                            AI-powered emotional support with mood-responsive conversations and personalized coping strategies available 24/7.
+                        </p>
+                        <div class="flex items-center text-secondary font-medium">
+                            <span>Chat Now</span>
+                            <svg class="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Bloom Challenges -->
+                <div class="feature-card card hover:shadow-2xl transition-all duration-500 cursor-pointer group relative overflow-hidden" onclick="window.location.href='growth_challenges.html'">
+                    <div class="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 bg-gradient-to-br from-accent to-accent-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-400">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-inter font-semibold text-primary mb-3">Bloom Challenges</h3>
+                        <p class="text-text-secondary font-source mb-4">
+                            Gamified self-growth system with daily missions, achievement tracking, and community features for continuous improvement.
+                        </p>
+                        <div class="flex items-center text-accent-600 font-medium">
+                            <span>Start Growing</span>
+                            <svg class="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Progress Analytics -->
+                <div class="feature-card card hover:shadow-2xl transition-all duration-500 cursor-pointer group relative overflow-hidden" onclick="window.location.href='progress_analytics.html'">
+                    <div class="absolute inset-0 bg-gradient-to-br from-success/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 bg-gradient-to-br from-success to-success-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-400">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-inter font-semibold text-primary mb-3">Progress Sanctuary</h3>
+                        <p class="text-text-secondary font-source mb-4">
+                            Advanced analytics showing your mental health journey with meaningful insights and milestone celebrations.
+                        </p>
+                        <div class="flex items-center text-success font-medium">
+                            <span>View Progress</span>
+                            <svg class="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Wellness Philosophy Section -->
+    <section class="py-20 bg-gradient-to-br from-surface to-primary-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-inter font-bold text-primary mb-6">
+                        Mental Wellness is a Journey, Not a Destination
+                    </h2>
+                    <p class="text-lg text-text-secondary font-source mb-6 leading-relaxed">
+                        MindBloom embodies the philosophy that mental wellness is a continuous journey of growth and self-discovery. 
+                        Like a digital garden, we provide the tools and environment where you can nurture your mental health through 
+                        daily care and attention.
+                    </p>
+                    <p class="text-lg text-text-secondary font-source mb-8 leading-relaxed">
+                        Our approach is warm yet sophisticated, scientifically-grounded yet deeply human, creating a safe space 
+                        where vulnerability becomes strength and self-awareness blooms into resilience.
+                    </p>
+                    <a href="wellness_library.html" class="btn-primary inline-flex items-center">
+                        Explore Wellness Library
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1655444192475-2807822f6e81" 
+                         alt="Person meditating in a peaceful garden setting, representing mental wellness journey and self-discovery" 
+                         class="rounded-2xl shadow-organic-lg w-full h-96 object-cover"
+                         onerror="this.src='https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'; this.onerror=null;">
+                    <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-gradient-to-br from-accent to-accent-600 rounded-2xl flex items-center justify-center shadow-organic">
+                        <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust & Security Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-inter font-bold text-primary mb-4">
+                    Your Privacy & Security Matter
+                </h2>
+                <p class="text-lg text-text-secondary max-w-2xl mx-auto font-source">
+                    We understand that mental health data is deeply personal. That's why we've built MindBloom with privacy-first principles and industry-leading security standards.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center group hover:transform hover:scale-105 transition-all duration-300">
+                    <div class="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-primary-200 transition-colors duration-300">
+                        <svg class="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-inter font-semibold text-primary mb-3">HIPAA Compliant</h3>
+                    <p class="text-text-secondary font-source">
+                        All your data is encrypted and stored according to HIPAA compliance standards, ensuring maximum privacy protection.
+                    </p>
+                </div>
+
+                <div class="text-center group hover:transform hover:scale-105 transition-all duration-300">
+                    <div class="w-16 h-16 bg-secondary-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-secondary-200 transition-colors duration-300">
+                        <svg class="w-8 h-8 text-secondary" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M18,8A6,6 0 0,0 12,2A6,6 0 0,0 6,8H4A2,2 0 0,0 2,10V20A2,2 0 0,0 4,22H20A2,2 0 0,0 22,20V10A2,2 0 0,0 20,8H18M12,4A4,4 0 0,1 16,8H8A4,4 0 0,1 12,4Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-inter font-semibold text-primary mb-3">End-to-End Encryption</h3>
+                    <p class="text-text-secondary font-source">
+                        Your journal entries and personal data are encrypted both in transit and at rest, accessible only to you.
+                    </p>
+                </div>
+
+                <div class="text-center group hover:transform hover:scale-105 transition-all duration-300">
+                    <div class="w-16 h-16 bg-accent-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-accent-200 transition-colors duration-300">
+                        <svg class="w-8 h-8 text-accent-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,16.5L6.5,12L7.91,10.59L11,13.67L16.59,8.09L18,9.5L11,16.5Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-inter font-semibold text-primary mb-3">User Control</h3>
+                    <p class="text-text-secondary font-source">
+                        You have complete control over your data with granular privacy settings and the ability to export or delete anytime.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="py-20 bg-gradient-to-br from-primary to-primary-700">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl md:text-4xl font-inter font-bold text-white mb-6">
+                Ready to Begin Your Mental Wellness Journey?
+            </h2>
+            <p class="text-lg text-primary-100 mb-8 font-source leading-relaxed">
+                Join thousands of individuals who have discovered a new approach to mental wellness. 
+                Start with our free mood tracking and experience the MindBloom difference today.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="mood_tracker.html" class="bg-white text-primary font-semibold px-8 py-4 rounded-lg hover:bg-primary-50 transition-gentle shadow-organic hover:transform hover:scale-105">
+                    Start Free Today
+                </a>
+                <a href="ai_companion.html" class="border-2 border-white text-white font-semibold px-8 py-4 rounded-lg hover:bg-white hover:text-primary transition-gentle hover:transform hover:scale-105">
+                    Meet EmpathyBot
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-accent to-accent-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-inter font-semibold">MindBloom</span>
+                    </div>
+                    <p class="text-primary-200 font-source mb-4 max-w-md">
+                        Your comprehensive digital sanctuary for mental wellness. Nurture your mental health through daily care and attention.
+                    </p>
+                    <p class="text-primary-300 text-sm">© 2025 MindBloom. All Rights Reserved.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-inter font-semibold mb-4">Features</h4>
+                    <ul class="space-y-2 text-primary-200">
+                        <li><a href="mood_tracker.html" class="hover:text-white transition-gentle">Mood Tracker</a></li>
+                        <li><a href="ai_companion.html" class="hover:text-white transition-gentle">AI Companion</a></li>
+                        <li><a href="growth_challenges.html" class="hover:text-white transition-gentle">Growth Challenges</a></li>
+                        <li><a href="progress_analytics.html" class="hover:text-white transition-gentle">Progress Analytics</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-inter font-semibold mb-4">Resources</h4>
+                    <ul class="space-y-2 text-primary-200">
+                        <li><a href="wellness_library.html" class="hover:text-white transition-gentle">Wellness Library</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-white transition-gentle">Crisis Support</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-white transition-gentle">Privacy Policy</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-white transition-gentle">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Enhanced Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Advanced 3D Scene Variables
+        let scene, camera, renderer;
+        let particles, geometryObjects = [];
+        let currentTheme = 'forest';
+        let mouseX = 0, mouseY = 0;
+        let isMouseOver = false;
+
+        // Theme configurations
+        const themes = {
+            forest: {
+                background: 'linear-gradient(135deg, #2d5a4a 0%, #1a3d2e 50%, #0f2a1f 100%)',
+                particles: {
+                    colors: [
+                        { r: 0.18, g: 0.35, b: 0.29 }, // Primary green
+                        { r: 0.48, g: 0.63, b: 0.36 }, // Secondary green
+                        { r: 0.91, g: 0.72, b: 0.43 }  // Accent warm
+                    ],
+                    count: 150
+                },
+                geometries: ['trees', 'leaves', 'crystals']
+            },
+            ocean: {
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #3b82f6 100%)',
+                particles: {
+                    colors: [
+                        { r: 0.12, g: 0.23, b: 0.54 }, // Deep blue
+                        { r: 0.12, g: 0.25, b: 0.69 }, // Medium blue
+                        { r: 0.23, g: 0.51, b: 0.96 }  // Light blue
+                    ],
+                    count: 200
+                },
+                geometries: ['bubbles', 'waves', 'fish']
+            },
+            space: {
+                background: 'linear-gradient(135deg, #1f1937 0%, #2d1b69 50%, #4c1d95 100%)',
+                particles: {
+                    colors: [
+                        { r: 0.12, g: 0.10, b: 0.22 }, // Dark purple
+                        { r: 0.18, g: 0.11, b: 0.41 }, // Medium purple
+                        { r: 0.30, g: 0.11, b: 0.58 }  // Bright purple
+                    ],
+                    count: 300
+                },
+                geometries: ['stars', 'planets', 'asteroids']
+            },
+            sunset: {
+                background: 'linear-gradient(135deg, #dc2626 0%, #ea580c 50%, #f59e0b 100%)',
+                particles: {
+                    colors: [
+                        { r: 0.86, g: 0.15, b: 0.15 }, // Red
+                        { r: 0.92, g: 0.35, b: 0.05 }, // Orange
+                        { r: 0.96, g: 0.62, b: 0.04 }  // Yellow
+                    ],
+                    count: 180
+                },
+                geometries: ['flames', 'embers', 'clouds']
+            }
+        };
+
+        function init3DScene() {
+            const canvas = document.getElementById('hero-3d-canvas');
+            const container = canvas.parentElement;
+            
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            renderer.setClearColor(0x000000, 0);
+            renderer.setPixelRatio(window.devicePixelRatio);
+
+            // Enable shadows
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+            // Add ambient light
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+            scene.add(ambientLight);
+
+            // Add directional light
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(10, 10, 5);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+
+            createParticleSystem();
+            createGeometryObjects();
+
+            camera.position.z = 5;
+
+            // Mouse interaction
+            document.addEventListener('mousemove', onMouseMove, false);
+            container.addEventListener('mouseenter', () => isMouseOver = true);
+            container.addEventListener('mouseleave', () => isMouseOver = false);
+
+            animate();
+        }
+
+        function createParticleSystem() {
+            if (particles) scene.remove(particles);
+
+            const theme = themes[currentTheme];
+            const geometry = new THREE.BufferGeometry();
+            const particleCount = theme.particles.count;
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+            const sizes = new Float32Array(particleCount);
+
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 30;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 30;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 30;
+
+                const colorChoice = Math.floor(Math.random() * theme.particles.colors.length);
+                const color = theme.particles.colors[colorChoice];
+                colors[i * 3] = color.r;
+                colors[i * 3 + 1] = color.g;
+                colors[i * 3 + 2] = color.b;
+
+                sizes[i] = Math.random() * 0.1 + 0.05;
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+            const material = new THREE.PointsMaterial({
+                size: 0.1,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                sizeAttenuation: true
+            });
+
+            particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+        }
+
+        function createGeometryObjects() {
+            // Clear existing geometry objects
+            geometryObjects.forEach(obj => scene.remove(obj));
+            geometryObjects = [];
+
+            const theme = themes[currentTheme];
+            
+            // Create theme-specific 3D objects
+            for (let i = 0; i < 5; i++) {
+                let geometry, material;
+
+                switch (currentTheme) {
+                    case 'forest':
+                        geometry = new THREE.ConeGeometry(0.2, 1, 8);
+                        material = new THREE.MeshPhongMaterial({ 
+                            color: new THREE.Color(0.2, 0.4, 0.2),
+                            transparent: true,
+                            opacity: 0.7
+                        });
+                        break;
+                    case 'ocean':
+                        geometry = new THREE.SphereGeometry(0.3, 16, 16);
+                        material = new THREE.MeshPhongMaterial({ 
+                            color: new THREE.Color(0.2, 0.5, 0.9),
+                            transparent: true,
+                            opacity: 0.6
+                        });
+                        break;
+                    case 'space':
+                        geometry = new THREE.OctahedronGeometry(0.3);
+                        material = new THREE.MeshPhongMaterial({ 
+                            color: new THREE.Color(0.4, 0.2, 0.8),
+                            transparent: true,
+                            opacity: 0.8
+                        });
+                        break;
+                    case 'sunset':
+                        geometry = new THREE.TetrahedronGeometry(0.4);
+                        material = new THREE.MeshPhongMaterial({ 
+                            color: new THREE.Color(0.9, 0.4, 0.1),
+                            transparent: true,
+                            opacity: 0.7
+                        });
+                        break;
+                }
+
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.x = (Math.random() - 0.5) * 15;
+                mesh.position.y = (Math.random() - 0.5) * 15;
+                mesh.position.z = (Math.random() - 0.5) * 10;
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+
+                scene.add(mesh);
+                geometryObjects.push(mesh);
+            }
+        }
+
+        function onMouseMove(event) {
+            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const time = Date.now() * 0.001;
+
+            if (particles) {
+                particles.rotation.x += 0.0005;
+                particles.rotation.y += 0.001;
+
+                if (isMouseOver) {
+                    particles.rotation.x += mouseY * 0.0005;
+                    particles.rotation.y += mouseX * 0.0005;
+                }
+            }
+
+            // Animate geometry objects
+            geometryObjects.forEach((obj, index) => {
+                obj.rotation.x += 0.01 + index * 0.001;
+                obj.rotation.y += 0.005 + index * 0.0005;
+                obj.position.y += Math.sin(time + index) * 0.003;
+            });
+
+            // Camera gentle movement
+            if (isMouseOver) {
+                camera.position.x += (mouseX - camera.position.x) * 0.01;
+                camera.position.y += (mouseY - camera.position.y) * 0.01;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        function switchTheme(themeName) {
+            currentTheme = themeName;
+            const heroSection = document.getElementById('hero-section');
+            
+            // Remove all theme classes
+            heroSection.classList.remove('theme-forest', 'theme-ocean', 'theme-space', 'theme-sunset');
+            
+            // Add new theme class
+            heroSection.classList.add(`theme-${themeName}`);
+            
+            // Update theme buttons
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.theme-btn.${themeName}`).classList.add('active');
+            
+            // Recreate 3D scene with new theme
+            createParticleSystem();
+            createGeometryObjects();
+        }
+
+        // Handle window resize
+        function handleResize() {
+            const canvas = document.getElementById('hero-3d-canvas');
+            const container = canvas.parentElement;
+            
+            if (camera && renderer) {
+                camera.aspect = container.offsetWidth / container.offsetHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.offsetWidth, container.offsetHeight);
+            }
+        }
+
+        // Theme switching functionality
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const theme = btn.dataset.theme;
+                switchTheme(theme);
+            });
+        });
+
+        // Interactive 3D elements
+        document.querySelectorAll('.interactive-3d-element').forEach(element => {
+            element.addEventListener('click', () => {
+                element.style.transform = 'scale(1.3) rotate(180deg)';
+                setTimeout(() => {
+                    element.style.transform = '';
+                }, 500);
+            });
+        });
+
+        // Particle trail effect
+        function createParticleTrail(e) {
+            const trail = document.createElement('div');
+            trail.className = 'particle-trail';
+            trail.style.left = e.clientX + 'px';
+            trail.style.top = e.clientY + 'px';
+            trail.style.width = '4px';
+            trail.style.height = '4px';
+            trail.style.background = 'rgba(123, 160, 91, 0.6)';
+            trail.style.borderRadius = '50%';
+            trail.style.animation = 'float 2s ease-out forwards';
+            document.body.appendChild(trail);
+            
+            setTimeout(() => {
+                trail.remove();
+            }, 2000);
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            if (Math.random() < 0.1) {
+                createParticleTrail(e);
+            }
+        });
+
+        // Initialize 3D scene when page loads
+        window.addEventListener('load', init3DScene);
+        window.addEventListener('resize', handleResize);
+
+        // Enhanced scroll-triggered animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.8s ease-out forwards';
+                }
+            });
+        }, observerOptions);
+
+        // Observe feature cards and other elements for animation
+        document.querySelectorAll('.feature-card, .gradient-orb, .interactive-3d-element').forEach(element => {
+            observer.observe(element);
+        });
+
+        // Add CSS for fadeInUp animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

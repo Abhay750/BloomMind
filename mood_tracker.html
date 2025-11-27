@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindEase Tracker - MindBloom</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        .mood-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .mood-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .mood-card.selected {
+            border: 2px solid var(--color-primary);
+            background: var(--color-primary-50);
+        }
+        
+        .mood-scale {
+            background: linear-gradient(90deg, #B85A5A 0%, #D4A574 25%, #7BA05B 50%, #6B9B6B 75%, #2D5A4A 100%);
+            height: 8px;
+            border-radius: 4px;
+            position: relative;
+        }
+        
+        .mood-indicator {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 3px solid var(--color-primary);
+            border-radius: 50%;
+            position: absolute;
+            top: -6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .mood-indicator:hover {
+            transform: scale(1.2);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 20px 0;
+        }
+        
+        .pattern-insight {
+            background: linear-gradient(135deg, var(--color-primary-50), var(--color-secondary-50));
+            border-left: 4px solid var(--color-primary);
+        }
+        
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .floating-element:nth-child(2) {
+            animation-delay: -2s;
+        }
+        
+        .floating-element:nth-child(3) {
+            animation-delay: -4s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .mood-entry-animation {
+            animation: moodEntry 0.5s ease-out;
+        }
+        
+        @keyframes moodEntry {
+            0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        
+        .weather-icon {
+            width: 24px;
+            height: 24px;
+            opacity: 0.7;
+        }
+        
+        .export-button {
+            background: linear-gradient(135deg, var(--color-accent), var(--color-accent-600));
+        }
+    </style>
+  
+  <script type="module" async src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fmindbloom3946back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.10"></script>
+  <script type="module" defer src="https://static.rocket.new/rocket-shot.js?v=0.0.1"></script>
+  </head>
+<body class="bg-background text-text-primary overflow-x-hidden">
+    <!-- Navigation Header -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-border-light transition-gentle">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-inter font-semibold text-primary">MindBloom</span>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-text-secondary hover:text-primary transition-gentle">Home</a>
+                    <a href="mood_tracker.html" class="text-primary font-medium border-b-2 border-primary pb-1">Mood Tracker</a>
+                    <a href="ai_companion.html" class="text-text-secondary hover:text-primary transition-gentle">AI Companion</a>
+                    <a href="growth_challenges.html" class="text-text-secondary hover:text-primary transition-gentle">Challenges</a>
+                    <a href="wellness_library.html" class="text-text-secondary hover:text-primary transition-gentle">Library</a>
+                    <a href="progress_analytics.html" class="text-text-secondary hover:text-primary transition-gentle">Progress</a>
+                <a href="log_in.html" class="text-text-secondary hover:text-primary transition-gentle"><button class="btn-login">Login</button></a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden p-2 rounded-lg hover:bg-surface transition-gentle" id="mobile-menu-btn">
+                    <svg class="w-6 h-6 text-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div class="md:hidden hidden bg-white border-t border-border-light" id="mobile-menu">
+            <div class="px-4 py-2 space-y-1">
+                <a href="homepage.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Home</a>
+                <a href="mood_tracker.html" class="block px-3 py-2 text-primary font-medium bg-primary-50 rounded-lg">Mood Tracker</a>
+                <a href="ai_companion.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">AI Companion</a>
+                <a href="growth_challenges.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Challenges</a>
+                <a href="wellness_library.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Library</a>
+                <a href="progress.html" class="block px-3 py-2 text-text-secondary hover:text-primary hover:bg-surface rounded-lg transition-gentle">Progress</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-20 pb-12 bg-gradient-to-br from-primary-50 via-background to-secondary-50 overflow-hidden">
+        <!-- Floating Elements -->
+        <div class="absolute top-32 left-10 w-20 h-20 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full floating-element opacity-30"></div>
+        <div class="absolute top-40 right-20 w-16 h-16 bg-gradient-to-br from-secondary-200 to-secondary-300 rounded-full floating-element opacity-40"></div>
+        <div class="absolute bottom-20 left-1/4 w-12 h-12 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full floating-element opacity-35"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="animate-gentle-fade">
+                <h1 class="text-4xl md:text-5xl font-inter font-bold text-primary mb-4">
+                    MindEase Tracker
+                </h1>
+                <p class="text-lg text-text-secondary max-w-2xl mx-auto mb-8 font-source">
+                    Your comprehensive mood logging companion with visual insights and pattern recognition. 
+                    Track your emotional journey and discover meaningful patterns in your mental wellness.
+                </p>
+                
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
+                    <div class="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-organic">
+                        <div class="text-2xl font-inter font-bold text-primary" id="days-tracked">0</div>
+                        <div class="text-sm text-text-secondary font-source">Days Tracked</div>
+                    </div>
+                    <div class="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-organic">
+                        <div class="text-2xl font-inter font-bold text-secondary" id="avg-mood">0.0</div>
+                        <div class="text-sm text-text-secondary font-source">Average Mood</div>
+                    </div>
+                    <div class="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-organic">
+                        <div class="text-2xl font-inter font-bold text-accent-600" id="insights-count">0</div>
+                        <div class="text-sm text-text-secondary font-source">Insights Gained</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Mood Entry Panel -->
+                <div class="lg:col-span-1">
+                    <div class="card sticky top-24">
+                        <h2 class="text-2xl font-inter font-semibold text-primary mb-6">How are you feeling today?</h2>
+                        
+                        <!-- Date and Time -->
+                        <div class="mb-6">
+                            <div class="flex items-center justify-between text-sm text-text-secondary font-source mb-2">
+                                <span>November 7, 2025</span>
+                                <span>7:16 PM</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <svg class="weather-icon" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                                <span class="text-sm text-text-secondary">Partly Cloudy, 72°F</span>
+                            </div>
+                        </div>
+
+                        <!-- Mood Scale -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-text-primary mb-3">Mood Level (1-10)</label>
+                            <div class="mood-scale relative">
+                                <div class="mood-indicator" style="left: 60%;" id="mood-slider"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-text-secondary mt-2">
+                                <span>Very Low</span>
+                                <span>Neutral</span>
+                                <span>Very High</span>
+                            </div>
+                            <div class="text-center mt-2">
+                                <span class="text-lg font-semibold text-primary" id="mood-value">7</span>
+                            </div>
+                        </div>
+
+                        <!-- Mood Categories -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-text-primary mb-3">What describes your mood?</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="mood-card p-3 border border-border rounded-lg text-center" data-mood="happy">
+                                    <div class="text-2xl mb-1">😊</div>
+                                    <div class="text-sm font-source">Happy</div>
+                                </div>
+                                <div class="mood-card p-3 border border-border rounded-lg text-center" data-mood="calm">
+                                    <div class="text-2xl mb-1">😌</div>
+                                    <div class="text-sm font-source">Calm</div>
+                                </div>
+                                <div class="mood-card p-3 border border-border rounded-lg text-center" data-mood="anxious">
+                                    <div class="text-2xl mb-1">😰</div>
+                                    <div class="text-sm font-source">Anxious</div>
+                                </div>
+                                <div class="mood-card p-3 border border-border rounded-lg text-center" data-mood="sad">
+                                    <div class="text-2xl mb-1">😢</div>
+                                    <div class="text-sm font-source">Sad</div>
+                                </div>
+                                <div class="mood-card p-3 border border-border rounded-lg text-center" data-mood="energetic">
+                                    <div class="text-2xl mb-1">⚡</div>
+                                    <div class="text-sm font-source">Energetic</div>
+                                </div>
+                                <div class="mood-card p-3 border border-border rounded-lg text-center" data-mood="tired">
+                                    <div class="text-2xl mb-1">😴</div>
+                                    <div class="text-sm font-source">Tired</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-text-primary mb-2">Notes (Optional)</label>
+                            <textarea class="input-field h-20 resize-none" placeholder="What's on your mind today?"></textarea>
+                        </div>
+
+                        <!-- Photo Attachment -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-text-primary mb-2">Add Photo</label>
+                            <div class="border-2 border-dashed border-border rounded-lg p-4 text-center hover:border-primary transition-gentle cursor-pointer">
+                                <svg class="w-8 h-8 text-text-secondary mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                                </svg>
+                                <span class="text-sm text-text-secondary">Click to add a photo</span>
+                            </div>
+                        </div>
+
+                        <!-- Save Button -->
+                        <div class="flex space-x-3">
+                            <button class="btn-primary flex-1" id="save-mood-btn">Save Mood Entry</button>
+                            <button class="btn-secondary" id="reset-data-btn" title="Reset all stored mood data">Reset Data</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Panel -->
+                <div class="lg:col-span-2 space-y-8">
+                    <!-- Mood Trend Chart -->
+                    <div class="card">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-inter font-semibold text-primary">Mood Trends</h3>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 text-sm bg-primary text-white rounded-lg">7 Days</button>
+                                <button class="px-3 py-1 text-sm text-text-secondary hover:bg-surface rounded-lg transition-gentle">30 Days</button>
+                                <button class="px-3 py-1 text-sm text-text-secondary hover:bg-surface rounded-lg transition-gentle">90 Days</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="mood-trend-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Pattern Insights -->
+                    <div class="card">
+                        <h3 class="text-xl font-inter font-semibold text-primary mb-6">Pattern Insights</h3>
+                        <div class="space-y-4">
+                            <div class="pattern-insight p-4 rounded-lg">
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-8 h-8 bg-success rounded-full flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-primary mb-1">Morning Mood Boost</h4>
+                                        <p class="text-sm text-text-secondary font-source">Your mood tends to be 23% higher in the morning hours (6-10 AM). Consider scheduling important activities during this time.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pattern-insight p-4 rounded-lg">
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-8 h-8 bg-warning rounded-full flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-primary mb-1">Weather Correlation</h4>
+                                        <p class="text-sm text-text-secondary font-source">Rainy days show a 15% decrease in your mood scores. Consider indoor activities or light therapy on cloudy days.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pattern-insight p-4 rounded-lg">
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-primary mb-1">Weekly Peak</h4>
+                                        <p class="text-sm text-text-secondary font-source">Fridays consistently show your highest mood scores. Your anticipation for weekends positively impacts your emotional state.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mood Distribution -->
+                    <div class="card">
+                        <h3 class="text-xl font-inter font-semibold text-primary mb-6">Mood Distribution</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-success-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <span class="text-2xl">😊</span>
+                                </div>
+                                <div class="text-sm font-medium text-primary">Happy</div>
+                                <div class="text-xs text-text-secondary">32%</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <span class="text-2xl">😌</span>
+                                </div>
+                                <div class="text-sm font-medium text-primary">Calm</div>
+                                <div class="text-xs text-text-secondary">28%</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-accent-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <span class="text-2xl">⚡</span>
+                                </div>
+                                <div class="text-sm font-medium text-primary">Energetic</div>
+                                <div class="text-xs text-text-secondary">25%</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-warning-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <span class="text-2xl">😰</span>
+                                </div>
+                                <div class="text-sm font-medium text-primary">Anxious</div>
+                                <div class="text-xs text-text-secondary">15%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Entries -->
+                    <div class="card">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-inter font-semibold text-primary">Recent Entries</h3>
+                            <button class="export-button text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-gentle">
+                                Export Report
+                            </button>
+                        </div>
+                        <div class="space-y-4" id="recent-entries-list">
+                            <!-- Recent entries will be rendered here by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Integration CTA -->
+    <section class="py-16 bg-gradient-to-br from-primary-50 to-secondary-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-inter font-bold text-primary mb-4">
+                Ready for Personalized Support?
+            </h2>
+            <p class="text-lg text-text-secondary mb-8 font-source">
+                Your mood patterns are ready to unlock deeper insights with EmpathyBot. 
+                Get personalized coping strategies based on your emotional journey.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="ai_companion.html" class="btn-primary">
+                    Chat with EmpathyBot
+                </a>
+                <a href="progress_analytics.html" class="btn-secondary">
+                    View Detailed Analytics
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-accent to-accent-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-inter font-semibold">MindBloom</span>
+                    </div>
+                    <p class="text-primary-200 font-source mb-4 max-w-md">
+                        Your comprehensive digital sanctuary for mental wellness. Track your emotional journey with privacy and care.
+                    </p>
+                    <p class="text-primary-300 text-sm">© 2025 MindBloom. All Rights Reserved.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-inter font-semibold mb-4">Features</h4>
+                    <ul class="space-y-2 text-primary-200">
+                        <li><a href="mood_tracker.html" class="hover:text-white transition-gentle">Mood Tracker</a></li>
+                        <li><a href="ai_companion.html" class="hover:text-white transition-gentle">AI Companion</a></li>
+                        <li><a href="growth_challenges.html" class="hover:text-white transition-gentle">Growth Challenges</a></li>
+                        <li><a href="progress_analytics.html" class="hover:text-white transition-gentle">Progress Analytics</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-inter font-semibold mb-4">Resources</h4>
+                    <ul class="space-y-2 text-primary-200">
+                        <li><a href="wellness_library.html" class="hover:text-white transition-gentle">Wellness Library</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-white transition-gentle">Crisis Support</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-white transition-gentle">Privacy Policy</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-white transition-gentle">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="supabase-config.js"></script>
+    <script type="module" src="supabase-client.js"></script>
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Mood slider functionality
+        const moodSlider = document.getElementById('mood-slider');
+        const moodValue = document.getElementById('mood-value');
+        let isDragging = false;
+
+        moodSlider.addEventListener('mousedown', function(e) {
+            isDragging = true;
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (isDragging) {
+                const slider = document.querySelector('.mood-scale');
+                const rect = slider.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+                
+                moodSlider.style.left = percentage + '%';
+                const moodScore = Math.round((percentage / 100) * 9) + 1;
+                moodValue.textContent = moodScore;
+            }
+        });
+
+        document.addEventListener('mouseup', function() {
+            isDragging = false;
+        });
+
+        // Mood card selection
+        document.querySelectorAll('.mood-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.mood-card').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        // --- Data persistence + UI helpers ---
+        const STORAGE_KEY = 'moodEntries';
+
+        // If you have the backend running, set `window.API_BASE = 'http://localhost:4000'` before this script
+        const API_BASE = window.API_BASE || '';
+
+        async function sendEntryToServer(entry) {
+            // If Supabase is configured, prefer it
+            if (window.supabaseClient && window.supabaseClient.supabase) {
+                try {
+                    // Try to get authenticated user from Supabase
+                    const userResp = await window.supabaseClient.supabase.auth.getUser();
+                    const user = userResp?.data?.user;
+                    const user_id = user?.id || window.MINDBLOOM_USERID || null;
+
+                    const payload = {
+                        user_id,
+                        score: entry.score,
+                        mood: entry.mood,
+                        mood_emoji: entry.moodEmoji,
+                        notes: entry.notes,
+                        created_at: new Date().toISOString()
+                    };
+
+                    const { data, error } = await window.supabaseClient.insertEntry(payload);
+                    if (error) console.warn('Supabase insert error', error);
+                } catch (e) {
+                    console.warn('Error sending entry to Supabase', e);
+                }
+                return;
+            }
+
+            // Fallback to existing API if configured
+            if (!API_BASE) return; // backend not configured
+            try {
+                // Provide a userId; in production this should come from your auth system
+                const payload = Object.assign({ userId: window.MINDBLOOM_USERID || 'demo-user' }, entry);
+                const res = await fetch(`${API_BASE.replace(/\/$/, '')}/api/entries`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) {
+                    console.warn('Failed to send entry to server', await res.text());
+                }
+            } catch (e) {
+                console.warn('Error sending entry to server', e);
+            }
+        }
+
+        function getStoredEntries() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                return raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                console.error('Failed to parse stored entries', e);
+                return [];
+            }
+        }
+
+        function storeEntries(entries) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+        }
+
+        function updateStatsAndInsights(entries) {
+            const daysTrackedEl = document.getElementById('days-tracked');
+            const avgMoodEl = document.getElementById('avg-mood');
+            const insightsEl = document.getElementById('insights-count');
+
+            const days = entries.length;
+            const avg = days ? (entries.reduce((s,e)=>s+e.score,0)/days) : 0;
+
+            daysTrackedEl.textContent = days;
+            avgMoodEl.textContent = avg ? avg.toFixed(1) : '0.0';
+            // Simple placeholder for insights count: 1 insight per 10 entries
+            insightsEl.textContent = Math.floor(days / 10);
+        }
+
+        function renderRecentEntries(entries) {
+            const container = document.getElementById('recent-entries-list');
+            if (!entries || entries.length === 0) {
+                container.innerHTML = '<div class="p-4 text-text-secondary">No recent entries yet.</div>';
+                return;
+            }
+
+            // Most recent first
+            const copy = entries.slice().reverse();
+            container.innerHTML = copy.map(e => {
+                const safeNotes = (e.notes || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                const date = e.date || '';
+                return `
+                    <div class="flex items-center space-x-4 p-4 bg-surface rounded-lg">
+                        <div class="text-2xl">${e.moodEmoji || '😊'}</div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium text-primary">${date}</span>
+                                <span class="text-sm text-text-secondary">${e.score}/10</span>
+                            </div>
+                            <p class="text-sm text-text-secondary font-source">${safeNotes}</p>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        function updateChartFromEntries(entries) {
+            if (!moodChart) return;
+            if (!entries || entries.length === 0) {
+                // clear chart
+                moodChart.data.labels = [];
+                moodChart.data.datasets[0].data = [];
+                moodChart.update();
+                return;
+            }
+
+            const labels = entries.map(e => e.date);
+            const data = entries.map(e => e.score);
+            moodChart.data.labels = labels;
+            moodChart.data.datasets[0].data = data;
+            moodChart.update();
+        }
+
+        function loadAllData() {
+            const entries = getStoredEntries();
+            updateStatsAndInsights(entries);
+            renderRecentEntries(entries);
+            updateChartFromEntries(entries);
+        }
+
+        // Save mood entry
+        document.getElementById('save-mood-btn').addEventListener('click', function() {
+            const selectedMoodEl = document.querySelector('.mood-card.selected');
+            const moodScore = Number(moodValue.textContent) || 0;
+            const notes = document.querySelector('textarea').value || '';
+            const now = new Date();
+            const dateStr = now.toLocaleString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
+
+            const moodKey = selectedMoodEl ? selectedMoodEl.getAttribute('data-mood') : '';
+            const emoji = selectedMoodEl ? selectedMoodEl.querySelector('div').textContent.trim() : '😊';
+
+            const entry = {
+                date: dateStr,
+                score: moodScore,
+                mood: moodKey,
+                moodEmoji: emoji,
+                notes: notes
+            };
+
+            const entries = getStoredEntries();
+            entries.push(entry);
+            storeEntries(entries);
+            // Try to send to backend (if configured); doesn't interrupt local save
+            sendEntryToServer(entry);
+
+            // Show success message
+            const btn = this;
+            btn.textContent = 'Saved Successfully!';
+            btn.classList.add('bg-success');
+            btn.classList.remove('bg-primary');
+            setTimeout(() => {
+                btn.textContent = 'Save Mood Entry';
+                btn.classList.remove('bg-success');
+                btn.classList.add('bg-primary');
+            }, 1500);
+
+            // Reset small UI
+            document.querySelectorAll('.mood-card').forEach(c => c.classList.remove('selected'));
+            document.querySelector('textarea').value = '';
+
+            // Update UI from storage
+            loadAllData();
+        });
+
+        // Initialize Chart.js
+        const ctx = document.getElementById('mood-trend-chart').getContext('2d');
+        const moodChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Nov 1', 'Nov 2', 'Nov 3', 'Nov 4', 'Nov 5', 'Nov 6', 'Nov 7'],
+                datasets: [{
+                    label: 'Mood Score',
+                    data: [6.5, 7.2, 8.1, 5.5, 7.0, 8.5, 7.0],
+                    borderColor: '#2D5A4A',
+                    backgroundColor: 'rgba(45, 90, 74, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#2D5A4A',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 10,
+                        grid: {
+                            color: 'rgba(45, 90, 74, 0.1)'
+                        },
+                        ticks: {
+                            color: '#5A6B5A'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(45, 90, 74, 0.1)'
+                        },
+                        ticks: {
+                            color: '#5A6B5A'
+                        }
+                    }
+                },
+                elements: {
+                    point: {
+                        hoverBackgroundColor: '#7BA05B'
+                    }
+                }
+            }
+        });
+
+        // Crisis detection simulation
+        function checkForCrisisPatterns() {
+            const recentScores = [6.5, 7.2, 8.1, 5.5, 7.0, 8.5, 7.0];
+            const lowScores = recentScores.filter(score => score < 4);
+            
+            if (lowScores.length >= 3) {
+                // Show crisis support notification
+                console.log('Crisis pattern detected - showing support resources');
+            }
+        }
+
+        // Initialize crisis detection
+        checkForCrisisPatterns();
+
+        // Export functionality
+        document.querySelector('.export-button').addEventListener('click', function() {
+            // Simulate export
+            this.textContent = 'Generating Report...';
+            setTimeout(() => {
+                this.textContent = 'Export Report';
+                alert('Mood report has been generated and is ready for download or sharing with your healthcare provider.');
+            }, 2000);
+        });
+
+        // Reset all stored data
+        document.getElementById('reset-data-btn').addEventListener('click', function() {
+            if (!confirm('This will permanently delete all stored mood data. Continue?')) return;
+            localStorage.removeItem(STORAGE_KEY);
+            // reset UI values
+            // reset slider to neutral (~44%) corresponding to score 5
+            moodSlider.style.left = '44%';
+            moodValue.textContent = '5';
+            document.querySelectorAll('.mood-card').forEach(c => c.classList.remove('selected'));
+            document.querySelector('textarea').value = '';
+
+            // reset chart and lists
+            updateStatsAndInsights([]);
+            renderRecentEntries([]);
+            updateChartFromEntries([]);
+
+            const btn = this;
+            btn.textContent = 'Reset Done';
+            setTimeout(() => { btn.textContent = 'Reset Data'; }, 1500);
+        });
+
+        // Initialize on load
+        loadAllData();
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>
